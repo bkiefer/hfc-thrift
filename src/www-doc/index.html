@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Java Script Example</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <script language="JavaScript" src="/thrift/thrift.js"></script>
+    <script language="JavaScript" src="/gen-js/HfcDbService.js"></script>
+    <script language="JavaScript" src="/gen-js/hfc_db_types.js"></script>
+  </head>
+
+
+  <body>
+    <div id="test"></div>
+    <script language="JavaScript">
+var transport = new Thrift.Transport("/HfcDbService");
+var protocol = new Thrift.Protocol(transport);
+var api = new HfcDbServiceClient(protocol);
+
+var authToken = "seems legit";
+
+/* side bar */
+
+//get the logged in professionals name
+function getAllProfessionals() {
+    try {
+        var result = api.getAllProfessionals(authToken);
+        console.log("%cresult of getProfessional", "color:grey", result.size());
+    } catch (error) {
+        console.log(error);
+    }
+}
+     /*           function doquery(){
+            var result = client.selectQuery(
+              "select * where ?s ?p ?o",
+              function(result) {
+              // jsonres = JSON.parse(result);
+              jsonres = result;
+                window.document.getElementById("test").innerHTML =
+                  "<pre>"+JSON.stringify(jsonres)+"</pre>";
+              }
+              )
+           }*/
+
+    </script>
+    <input type="button" onclick="getAllProfessionals()" value="query"/>
+  </body>
+</html>

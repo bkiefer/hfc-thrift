@@ -1,0 +1,6 @@
+<http://www.dfki.de/lt/onto/pal/semantics.owl#Entity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.dfki.de/lt/onto/pal/semantics.owl#Actor> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.dfki.de/lt/onto/pal/semantics.owl#Actor> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/pal/semantics.owl#Entity> .
+<http://www.dfki.de/lt/onto/common/dialogue.owl#Agent> <http://www.w3.org/2002/07/owl#equivalentClass> <http://www.dfki.de/lt/onto/pal/domain.owl#Actor> .
+<http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/2002/07/owl#equivalentClass> <http://www.dfki.de/lt/onto/pal/domain.owl#Actor> .
+<http://www.dfki.de/lt/onto/pal/domain.owl#Actor> <http://www.w3.org/2002/07/owl#equivalentClass> <http://www.dfki.de/lt/onto/pal/semantics.owl#Actor> .
