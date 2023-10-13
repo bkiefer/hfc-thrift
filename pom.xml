@@ -30,7 +30,7 @@
     <dependency>
       <groupId>de.dfki.lt.hfc</groupId>
       <artifactId>hfc</artifactId>
-      <version>1.5.0</version>
+      <version>[1.5.0,)</version>
       <type>jar</type>
     </dependency>
 
@@ -78,15 +78,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
-        <configuration>
-          <argLine>-Dorg.slf4j.simpleLogger.defaultLogLevel=WARN</argLine>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.thrift.tools</groupId>
         <artifactId>maven-thrift-plugin</artifactId>
