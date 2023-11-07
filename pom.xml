@@ -7,7 +7,7 @@
 
   <groupId>de.dfki.lt.hfc</groupId>
   <artifactId>hfc-thrift</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
 
   <inceptionYear>2023</inceptionYear>
@@ -16,8 +16,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <slf4j.version>2.0.5</slf4j.version>
-    <logback.version>1.4.5</logback.version>
+    <logback.version>1.4.11</logback.version>
   </properties>
 
   <dependencies>
@@ -30,7 +29,7 @@
     <dependency>
       <groupId>de.dfki.lt.hfc</groupId>
       <artifactId>hfc</artifactId>
-      <version>[1.5.0,)</version>
+      <version>[1.5.2,)</version>
       <type>jar</type>
     </dependency>
 
@@ -58,13 +57,6 @@
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <type>jar</type>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
