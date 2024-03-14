@@ -2,7 +2,7 @@
 to_dir="src/main"
 thrift_dir="$to_dir/thrift/"
 
-for lang in cpp java python; do
+for lang in cpp java py; do
     for thrift_file in `find $thrift_dir -name \*.thrift`; do
         thrift --gen $lang -o "$to_dir" "$thrift_file"
     done
