@@ -22,3 +22,4 @@ bld_cpp/
 cmake_install.cmake
 nbactions.xml
 /Aufbewahrung/
+**/__pycache__/*
