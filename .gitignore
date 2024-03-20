@@ -11,6 +11,7 @@ hfc-db.iml
 examplequeries.txt
 src/main/gen-java/
 src/main/gen-cpp/
+src/main/gen-py/
 src/main/resources/icons/gtk-apply.svg
 src/main/resources/icons/gtk-clear.svg
 src/main/resources/www-doc/test.html
