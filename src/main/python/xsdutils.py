@@ -52,53 +52,6 @@ def splitOwlUri(uri: str) -> (str, str):
     pos = uri.rfind(':')
   return uri[1:pos], uri[pos+1:-1]
 
-"""HFC client connector"""
-hfc = None
 
-"""to resolve name clashes because of namespaces in RDF, and to get the RDF
-class name from the python class name"""
-
-# for classes (and properties?):
-# python object <-> HFC Uris
-rdf2py = dict()
-py2rdf = dict()
-
-# for objects: HFC Uris -> Python object
-
-# namespace to create new instances in
-namespace = None
-
-def preload_classes(classmapping: dict) -> None:
-  global rdf2py, py2rdf, hfc
-  for uri in classmapping:
-    rdf2py[uri] = classmapping[uri]
-    py2rdf[classmapping[uri]] = uri
-  classes = hfc.selectQuery("select ?clz where ?clz <rdf:type> <owl:Class> ?_")
-  for s in classes.table.rows:
-    uri = s[0]
-    ns, name = splitOwlUri(uri)
-    if uri not in classmapping:
-      if uri not in rdf2py:
-        rdf2py[uri] = name
-        py2rdf[name] = uri
-      else:
-        # Todo: logger.warn
-        print('{} already in class dict, second URI {}, ignored'.format(name, uri))
-
-def connect(host='localhost', port=9090, classmapping=dict(), ns='dom:') -> None:
-  """
-  classmapping is a map from class uri to (simple) name
-  ns is the namespace where new instances are created
-  """
-  global hfc, namespace
-
-  hfc = HfcClient(host, port)
-  hfc.connect()
-  namespace = ns
-  preload_classes(classmapping)
-
-def disconnect() -> None:
-  global hfc
-  hfc.disconnect()
 
 

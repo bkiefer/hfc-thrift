@@ -12,6 +12,12 @@ struct QueryResult {
   2: required Table table;
 }
 
+struct PropInfo {
+  1: required i32 type;
+
+  2: required list<string> ranges;
+}
+
 exception QueryException {
   1: string why;
 }
@@ -98,4 +104,6 @@ service HfcDbService {
   string getValue(1: string uri, 2: string predicate)
          throws (1:QueryException qex),
 
+  // method to support python client: get internal info about properties
+  map<string, PropInfo> getAllProps(1: string classuri)
 }
