@@ -30,13 +30,23 @@ class HfcClient(HfcDbService.Client):
     def disconnect(self):
         self.transport.close()
 
+
+def connect(host='localhost', port=9090) -> HfcClient:
+  """
+  classmapping is a map from class uri to (simple) name
+  ns is the namespace where new instances are created
+  """
+
+  hfc = HfcClient(host, port)
+  hfc.connect()
+  return hfc
+
 # Only for testing
 # start the HFC server first:
 # bin/startServer src/test/data/test.yml 
 if __name__ == '__main__':
     try:
-        client = HfcClient('localhost', 9090)
-        client.connect()
+        client = connect('localhost', 7777)
         qr = client.selectQuery('select ?uri where ?uri <rdf:type> <owl:Class> ?_')
         print(qr.table.rows[1][0])
         client.disconnect()

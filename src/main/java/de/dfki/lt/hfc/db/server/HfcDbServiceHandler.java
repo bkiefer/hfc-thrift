@@ -1,6 +1,10 @@
 package de.dfki.lt.hfc.db.server;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.thrift.TException;
@@ -12,7 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import de.dfki.lt.hfc.db.HfcDbHandler;
 import de.dfki.lt.hfc.db.StreamingClient;
+import de.dfki.lt.hfc.db.rdfProxy.RdfClass;
+import de.dfki.lt.hfc.db.rdfProxy.RdfProxy;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
+import de.dfki.lt.hfc.db.remote.PropInfo;
 import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.remote.QueryResult;
 import de.dfki.lt.hfc.db.remote.Table;
@@ -156,5 +163,18 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
   @Override
   public int insertTimed(Table t, long timestamp) {
     return _h.insert(get(t), timestamp);
+  }
+
+  @Override
+  public Map<String, PropInfo> getAllProps(String classuri) {
+    RdfProxy proxy = new RdfProxy(_h);
+    RdfClass clazz = proxy.getClass(classuri);
+    Map<String, PropInfo> result = new HashMap<>();
+    for (String prop : clazz.getProperties()) {
+      int type = clazz.getPropertyType(prop);
+      List<String> ranges = new ArrayList(clazz.getPropertyRange(prop));
+      result.put(prop, new PropInfo(type, ranges));
+    }
+    return result;
   }
 }
