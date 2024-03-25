@@ -21,6 +21,7 @@ class MyTestCase(unittest.TestCase):
 
         for line in proc.stdout:
             if "Starting" in line:
+                print("HFC Server started successfully", flush=True)
                 break
         # don't use default port: PAL hfc service uses it.
         RdfProxy.init_rdfproxy('localhost', 7777)
@@ -49,8 +50,22 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(type(newchild).__name__, "Child")
         self.assertEqual(newchild.uri, "<dom:child_22>")
         # now test the properties
-        self.assertTrue(newchild.isFunctional("hasIntimacyLevel"))
+        self.assertTrue(newchild.isFunctional("<dom:hasIntimacyLevel>"))
         newchild.hasIntimacyLevel = 0.7
+
+    def test_relationalprop(self):
+        newchild = RdfProxy.createProxy("Child", "<dom:Child>", "<dom:child_22>")
+        bro1 = RdfProxy.createProxy("Brother", "<dom:Brother>", "<dom:bro_23>")
+        bro2 = RdfProxy.createProxy("Brother", "<dom:Brother>", "<dom:bro_24>")
+        newchild.hasBrother = [bro1, bro2]
+        self.assertEqual(2, len(newchild.hasBrother))
+        bro3 = RdfProxy.getObject("Brother")
+        newchild.hasBrother.add(bro3)
+        self.assertEqual(3, len(newchild.hasBrother))
+        newchild.hasBrother.remove(bro1)
+        self.assertEqual(2, len(newchild.hasBrother))
+        self.assertTrue(bro2 in newchild.hasBrother and bro3 in newchild.hasBrother)
+
 
 if __name__ == '__main__':
     unittest.main()
