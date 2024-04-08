@@ -26,8 +26,6 @@ class RdfProxy():
     @classmethod
     def getObject(cls, classname):
         """ A factory method to create a new object in the RDF/python world"""
-        global hfc
-
         owlclassuri = cls.__py2rdf[classname]
         uri = hfc.getNewId(cls.namespace, owlclassuri)
         # create a python clazz object using "introspection"
@@ -35,8 +33,6 @@ class RdfProxy():
 
     @classmethod
     def rdf2pyobj(cls, uri: str):
-        global hfc
-
         if isXsd(uri):
             return xsd2python(uri)
         else:
@@ -54,14 +50,10 @@ class RdfProxy():
         """Turn arbitrary xsd value or uri into python object.
            If value is an uri, this may result in a recursive call
            (currently not)"""
-        global hfc
-
         value = hfc.getValue(self.uri, prop_uri)
         return RdfProxy.rdf2pyobj(value)
 
     def get_rdf_as_rdfset(self, prop_uri: str):
-        global hfc
-
         """Turn arbitrary xsd value or uri into python object.
            If value is an uri, this may result in a recursive call
            (currently not)"""
@@ -86,8 +78,6 @@ class RdfProxy():
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
-        global hfc
-
         for uri in classmapping:
             cls.__rdf2py[uri] = classmapping[uri]
             cls.__py2rdf[classmapping[uri]] = uri
@@ -113,14 +103,10 @@ class RdfProxy():
 
     @classmethod
     def shutdown_rdfproxy(cls):
-        global hfc
-
         hfc.disconnect()
 
     @classmethod
     def preload_propertyInfo(cls, uri: str):
-        global hfc
-
         cls.__propertyRange = dict()
         cls.__propertyType = dict()
         cls.__propertyBaseToFull = dict()
@@ -180,8 +166,6 @@ class RdfProxy():
 
     def __setattr__(self, slot, value):
         # should we have an abstract method checking slot/value validity?
-        global hfc
-
         rdfvalue = RdfProxy.python2rdf(value)
         if not rdfvalue:
             # Todo: logger.warn
@@ -201,8 +185,6 @@ class RdfSet():
         self.__pred_uri = pred_uri
 
     def __add_in_hfc(self, pyobj):
-        global hfc
-
         rdfobj = RdfProxy.python2rdf(pyobj)
         hfc.addToMultiValue(self.subjuri(), self.__pred_uri, rdfobj)
 
@@ -214,8 +196,6 @@ class RdfSet():
         self.__add_in_hfc(pyobj)
 
     def __remove_in_hfc(self, pyobj):
-        global hfc
-
         rdfobj = RdfProxy.python2rdf(pyobj)
         hfc.removeFromMultiValue(self.subjuri(), self.__pred_uri, rdfobj)
 
