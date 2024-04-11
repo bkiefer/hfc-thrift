@@ -10,26 +10,32 @@ def isXsd(s: str) -> bool:
     return s.startswith('<xsd:') or s.startswith('<http://www.w3.org/2001/XMLSchema#')
 
 
-def extractTypeAndValue(xsdstring: str):
+def extractTypeAndValue(xsdstring: str) -> tuple[str, str] | None:
     index = xsdstring.rfind('^')
-    if not index:
+    if index == -1:
         return None
     value = xsdstring[1:index - 2]
     xsdstring = xsdstring[index + 1:]
-    ns, name = splitOwlUri(xsdstring)
-    return name, value
+    splits = splitOwlUri(xsdstring)
+    if splits:
+        return splits[1], value
+    return None
 
 
 # atomic value --> xsd string
-def xsd2python(xsdstring: str):
+def xsd2python(xsdstring: str) -> int | str | float | None:
     # TODO: check which python type corresponds to the value and convert
-    name, value = extractTypeAndValue(xsdstring)
+    pair = extractTypeAndValue(xsdstring)
+    if not pair:
+        return None
+    name, value = pair
     if name == "int":
         return int(value)
     elif name == "string":
         return value
     elif name == "double":
         return float(value)
+    return None
 
 
 xsdclassdict = {
@@ -40,15 +46,16 @@ xsdclassdict = {
 }
 
 
-def python2xsd(py_val):
-    xsd = xsdclassdict[type(py_val)]
-    if xsd:
-        return '"' + str(py_val) + '"^^<xsd:' + xsd + '>'
+def python2xsd(py_val) -> str | None:
+    if type(py_val) in xsdclassdict:
+        return f'"{str(py_val)}"^^<xsd:{xsdclassdict[type(py_val)]}>'
     return None
 
 
-def splitOwlUri(uri: str) -> (str, str):
+def splitOwlUri(uri: str) -> tuple[str, str] | None:
     pos = uri.rfind('#')
     if pos == -1:
         pos = uri.rfind(':')
+    if pos == -1:
+        return None
     return uri[1:pos], uri[pos + 1:-1]
