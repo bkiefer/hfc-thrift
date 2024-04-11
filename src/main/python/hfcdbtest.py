@@ -1,3 +1,4 @@
+import sys
 import unittest
 import subprocess
 import os
@@ -8,30 +9,37 @@ from rdfproxy import RdfProxy
 proc = None
 
 class MyTestCase(unittest.TestCase):
-    @staticmethod
-    def setUpClass() -> None:
-        global proc
-        os.chdir("../../..")
-        # start hfc server process
-        proc = subprocess.Popen(["/usr/bin/java",
-                                 "-Dlogback.configurationFile=./logback.xml",
-                                 "-jar", "target/hfc-server.jar",
-                                 "-p", "7777", "src/test/data/test.yml"]
-                                , encoding="UTF-8", stdout=subprocess.PIPE)
+    @classmethod
+    def setUpClass(cls) -> None:
+        if sys.platform.startswith('linux'):
+            # Linux specific procedures
+            global proc
+            os.chdir("../../..")
+            # start hfc server process
+            proc = subprocess.Popen(["/usr/bin/java",
+                                     "-Dlogback.configurationFile=./logback.xml",
+                                     "-jar", "target/hfc-server.jar",
+                                     "-p", "7777", "src/test/data/test.yml"]
+                                    , encoding="UTF-8", stdout=subprocess.PIPE)
 
-        for line in proc.stdout:
-            if "Starting" in line:
-                print("HFC Server started successfully", flush=True)
-                break
+            for line in proc.stdout:
+                if "Starting" in line:
+                    print("HFC Server started successfully", flush=True)
+                    break
+        else:
+            print('Make sure HFC server is running on port 7777 using test.yml configuration')
+
         # don't use default port: PAL hfc service uses it.
         RdfProxy.init_rdfproxy('localhost', 7777)
 
-    @staticmethod
-    def tearDownClass() -> None:
-        global proc
+    @classmethod
+    def tearDownClass(cls) -> None:
         RdfProxy.shutdown_rdfproxy()
-        # stop hfc server process
-        proc.terminate()
+
+        if sys.platform.startswith('linux'):
+            # stop hfc server process
+            global proc
+            proc.terminate()
 
     def test_classes_loaded(self):
         self.assertEqual(len(RdfProxy.__dict__["_RdfProxy__rdf2py"]), 223)
