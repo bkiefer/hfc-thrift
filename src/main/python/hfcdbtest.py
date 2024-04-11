@@ -41,17 +41,42 @@ class MyTestCase(unittest.TestCase):
             global proc
             proc.terminate()
 
-    def test_classes_loaded(self):
-        self.assertEqual(len(RdfProxy.__dict__["_RdfProxy__rdf2py"]), 223)
+    def test_isXsd(self):
+        self.assertTrue(xsdutils.isXsd('<http://www.w3.org/2001/XMLSchema#string>'))
+        self.assertTrue(xsdutils.isXsd('<xsd:string>'))
+        self.assertFalse(xsdutils.isXsd('no-xsd'))
+
+    def test_extractTypeAndValue(self):
+        self.assertEqual(xsdutils.extractTypeAndValue('"1"^^<xsd:int>'), ('int', '1'))
+        self.assertEqual(xsdutils.extractTypeAndValue('"1.0"^^<xsd:double>'), ('double', '1.0'))
+        self.assertEqual(xsdutils.extractTypeAndValue('"ttt"^^<xsd:string>'), ('string', 'ttt'))
+        self.assertIsNone(xsdutils.extractTypeAndValue('no-xsd'))
+        self.assertIsNone(xsdutils.extractTypeAndValue('ttt^^no-xsd'))
+
+    def test_xsd2py(self):
+        self.assertEqual(xsdutils.xsd2python('"1"^^<xsd:int>'), 1)
+        self.assertEqual(xsdutils.xsd2python('"1.0"^^<xsd:double>'), 1.0)
+        self.assertEqual(xsdutils.xsd2python('"ttt"^^<xsd:string>'), 'ttt')
+        self.assertIsNone(xsdutils.xsd2python('no-xsd'))
+        self.assertIsNone(xsdutils.xsd2python('"ttt"^^<xsd:notype>'))
 
     def test_py2xsd(self):
-        self.assertEqual('"1"^^<xsd:int>', xsdutils.python2xsd(1))
-        self.assertEqual(1, xsdutils.xsd2python('"1"^^<xsd:int>'))
+        self.assertEqual(xsdutils.python2xsd(1), '"1"^^<xsd:int>')
+        self.assertEqual(xsdutils.python2xsd(1.0), '"1.0"^^<xsd:double>')
+        self.assertEqual(xsdutils.python2xsd('ttt'), '"ttt"^^<xsd:string>')
+        self.assertIsNone(xsdutils.python2xsd(None))
+
+    def test_splitOwlUri(self):
+        self.assertEqual(xsdutils.splitOwlUri('<xsd:int>'), ('xsd', 'int'))
+        self.assertEqual(xsdutils.splitOwlUri('<http://www.w3.org/2001/XMLSchema#string>'), ('http://www.w3.org/2001/XMLSchema', 'string'))
+        self.assertIsNone(xsdutils.splitOwlUri('no-uri'))
+
+    def test_classes_loaded(self):
+        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 223)
 
     def test_classcreation(self):
         clz = RdfProxy.getClass("Child", "<dom:Child>")
         self.assertTrue(isinstance(clz, type))
-
 
     def test_objectcreation(self):
         newchild = RdfProxy.createProxy("Child", "<dom:Child>", "<dom:child_22>")
