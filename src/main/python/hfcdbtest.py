@@ -4,7 +4,7 @@ import subprocess
 import os
 
 import xsdutils
-from rdfproxy import RdfProxy
+from rdfproxy import RdfProxy, classfactory
 
 proc = None
 
@@ -71,8 +71,37 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(xsdutils.splitOwlUri('<http://www.w3.org/2001/XMLSchema#string>'), ('http://www.w3.org/2001/XMLSchema', 'string'))
         self.assertIsNone(xsdutils.splitOwlUri('no-uri'))
 
-    def test_classes_loaded(self):
+    def test_init_rdfproxy(self):
+        # init_rdfproxy is called in test class setup, verify its effects here
         self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 223)
+        # TODO this fails when namespace is ignored, we have name doubles in different name spaces
+        #self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 223)
+        self.assertEqual(RdfProxy.namespace, 'dom:')
+
+    def test_preload_classes(self):
+        RdfProxy.preload_classes({'uri1': 'class1', 'uri2': 'class2'})
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri1'], 'class1')
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri2'], 'class2')
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class1'], 'uri1')
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class2'], 'uri2')
+
+    def test_classfactory(self):
+        clazz = classfactory('foo')
+        self.assertEqual(type(clazz), type)
+        self.assertTrue(issubclass(clazz, RdfProxy))
+
+    def test_getClass(self):
+        clazz1 = RdfProxy.getClass('Brother', '<dom:Brother>')
+        self.assertEqual(type(clazz1), type)
+        self.assertTrue(issubclass(clazz1, RdfProxy))
+        self.assertEqual(len(clazz1._RdfProxy__propertyType), 18)
+        # TODO these fail when namespace is ignored, we have name doubles in different name spaces
+        #self.assertEqual(len(clazz1._RdfProxy__propertyRange), 18)
+        #self.assertEqual(len(clazz1._RdfProxy__propertyBaseToFull), 18)
+
+    def test_getObject(self):
+        bro = RdfProxy.getObject("Brother")
+        self.assertIsNotNone(bro)
 
     def test_classcreation(self):
         clz = RdfProxy.getClass("Child", "<dom:Child>")
