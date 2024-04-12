@@ -1,27 +1,37 @@
+import logging
+
 import xsdutils
-from hfcclient import connect
+from hfcclient import connect, HfcClient
 from xsdutils import isXsd, xsd2python, python2xsd, splitOwlUri
 
+# configure logger
+logging.basicConfig(
+    format="%(asctime)s: %(levelname)s: %(message)s",
+    level=logging.INFO,
+    force=True)
+logger = logging.getLogger(__file__)
+logger.setLevel(logging.INFO)
+
 """HFC client connector"""
-hfc = None
+hfc: HfcClient
 
 
-class RdfProxy():
+class RdfProxy:
     FUNCTIONAL_MASK = 4
 
     # namespace to create new instances in
-    namespace = None
+    namespace: str
 
     """to resolve name clashes because of namespaces in RDF, and to get the RDF
     class name from the python class name"""
 
     # for classes (and properties?):
     # python object <-> HFC Uris
-    __rdf2py = dict()
-    __py2rdf = dict()
+    __rdf2py: dict = dict()
+    __py2rdf: dict = dict()
 
     """All created RDF objects in the python memory"""
-    __uri2pyobject = dict()
+    __uri2pyobject: dict = dict()
 
     @classmethod
     def getObject(cls, classname):
@@ -90,8 +100,7 @@ class RdfProxy():
                     cls.__rdf2py[uri] = name
                     cls.__py2rdf[name] = uri
                 else:
-                    # Todo: logger.warn
-                    print('{} already in class dict, second URI {}, ignored'.format(name, uri))
+                    logger.warning(f'{name} already in class dict, second URI {uri}, ignored')
 
     @classmethod
     def init_rdfproxy(cls, host='localhost', port=9090, classmapping=dict(), ns='dom:') -> None:
@@ -168,8 +177,7 @@ class RdfProxy():
         # should we have an abstract method checking slot/value validity?
         rdfvalue = RdfProxy.python2rdf(value)
         if not rdfvalue:
-            # Todo: logger.warn
-            print('{} can not be converted to an RDF value'.format(value))
+            logger.warning(f'{value} can not be converted to an RDF value')
         rdfslot = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfslot):
             hfc.setValue(self.uri, rdfslot, rdfvalue)
