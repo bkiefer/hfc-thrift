@@ -6,6 +6,45 @@ import os
 import xsdutils
 from rdfproxy import RdfProxy, classfactory
 
+
+class UtilsTestCase(unittest.TestCase):
+    def test_isXsd(self):
+        self.assertTrue(xsdutils.isXsd('<http://www.w3.org/2001/XMLSchema#string>'))
+        self.assertTrue(xsdutils.isXsd('<xsd:string>'))
+        self.assertFalse(xsdutils.isXsd('no-xsd'))
+
+    def test_splitOwlUri(self):
+        self.assertEqual(xsdutils.splitOwlUri('<http://www.w3.org/2001/XMLSchema#string>'),
+                         ('http://www.w3.org/2001/XMLSchema', 'string'))
+        self.assertEqual(xsdutils.splitOwlUri('<xsd:int>'), ('xsd', 'int'))
+        self.assertRaises(ValueError, xsdutils.splitOwlUri, 'no-uri')
+
+    def test_extractTypeAndValue(self):
+        self.assertEqual(xsdutils.extractTypeAndValue('"1"^^<xsd:int>'), ('int', '1'))
+        self.assertEqual(xsdutils.extractTypeAndValue('"1.0"^^<xsd:double>'), ('double', '1.0'))
+        self.assertEqual(xsdutils.extractTypeAndValue('"ttt"^^<xsd:string>'), ('string', 'ttt'))
+        with self.assertRaisesRegex(ValueError, 'no-xsd is not a valid xsd string'):
+            xsdutils.extractTypeAndValue('no-xsd')
+        with self.assertRaisesRegex(ValueError, 'uri no-xsd is not a valid owl uri'):
+            xsdutils.extractTypeAndValue('ttt^^no-xsd')
+
+    def test_xsd2py(self):
+        self.assertEqual(xsdutils.xsd2python('"1"^^<xsd:int>'), 1)
+        self.assertEqual(xsdutils.xsd2python('"1.0"^^<xsd:double>'), 1.0)
+        self.assertEqual(xsdutils.xsd2python('"ttt"^^<xsd:string>'), 'ttt')
+        with self.assertRaisesRegex(ValueError, 'no-xsd is not a valid xsd string'):
+            xsdutils.xsd2python('no-xsd')
+        with self.assertRaisesRegex(ValueError, 'unsupported type notype'):
+            xsdutils.xsd2python('"ttt"^^<xsd:notype>')
+
+    def test_py2xsd(self):
+        self.assertEqual(xsdutils.python2xsd(1), '"1"^^<xsd:int>')
+        self.assertEqual(xsdutils.python2xsd(1.0), '"1.0"^^<xsd:double>')
+        self.assertEqual(xsdutils.python2xsd('ttt'), '"ttt"^^<xsd:string>')
+        with self.assertRaisesRegex(ValueError, "unsupported type <class 'NoneType'> of None"):
+            xsdutils.python2xsd(None)
+
+
 proc = None
 
 class MyTestCase(unittest.TestCase):
@@ -40,36 +79,6 @@ class MyTestCase(unittest.TestCase):
             # stop hfc server process
             global proc
             proc.terminate()
-
-    def test_isXsd(self):
-        self.assertTrue(xsdutils.isXsd('<http://www.w3.org/2001/XMLSchema#string>'))
-        self.assertTrue(xsdutils.isXsd('<xsd:string>'))
-        self.assertFalse(xsdutils.isXsd('no-xsd'))
-
-    def test_extractTypeAndValue(self):
-        self.assertEqual(xsdutils.extractTypeAndValue('"1"^^<xsd:int>'), ('int', '1'))
-        self.assertEqual(xsdutils.extractTypeAndValue('"1.0"^^<xsd:double>'), ('double', '1.0'))
-        self.assertEqual(xsdutils.extractTypeAndValue('"ttt"^^<xsd:string>'), ('string', 'ttt'))
-        self.assertIsNone(xsdutils.extractTypeAndValue('no-xsd'))
-        self.assertIsNone(xsdutils.extractTypeAndValue('ttt^^no-xsd'))
-
-    def test_xsd2py(self):
-        self.assertEqual(xsdutils.xsd2python('"1"^^<xsd:int>'), 1)
-        self.assertEqual(xsdutils.xsd2python('"1.0"^^<xsd:double>'), 1.0)
-        self.assertEqual(xsdutils.xsd2python('"ttt"^^<xsd:string>'), 'ttt')
-        self.assertIsNone(xsdutils.xsd2python('no-xsd'))
-        self.assertIsNone(xsdutils.xsd2python('"ttt"^^<xsd:notype>'))
-
-    def test_py2xsd(self):
-        self.assertEqual(xsdutils.python2xsd(1), '"1"^^<xsd:int>')
-        self.assertEqual(xsdutils.python2xsd(1.0), '"1.0"^^<xsd:double>')
-        self.assertEqual(xsdutils.python2xsd('ttt'), '"ttt"^^<xsd:string>')
-        self.assertIsNone(xsdutils.python2xsd(None))
-
-    def test_splitOwlUri(self):
-        self.assertEqual(xsdutils.splitOwlUri('<xsd:int>'), ('xsd', 'int'))
-        self.assertEqual(xsdutils.splitOwlUri('<http://www.w3.org/2001/XMLSchema#string>'), ('http://www.w3.org/2001/XMLSchema', 'string'))
-        self.assertIsNone(xsdutils.splitOwlUri('no-uri'))
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
