@@ -82,9 +82,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
-        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 223)
-        # TODO this fails when namespace is ignored, we have name doubles in different name spaces
-        #self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 223)
+        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 218)
+        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 218)
         self.assertEqual(RdfProxy.namespace, 'dom:')
 
     def test_preload_classes(self):
@@ -103,10 +102,9 @@ class MyTestCase(unittest.TestCase):
         clazz1 = RdfProxy.getClass('Brother', '<dom:Brother>')
         self.assertEqual(type(clazz1), type)
         self.assertTrue(issubclass(clazz1, RdfProxy))
-        self.assertEqual(len(clazz1._RdfProxy__propertyType), 18)
-        # TODO these fail when namespace is ignored, we have name doubles in different name spaces
-        #self.assertEqual(len(clazz1._RdfProxy__propertyRange), 18)
-        #self.assertEqual(len(clazz1._RdfProxy__propertyBaseToFull), 18)
+        self.assertEqual(len(clazz1._RdfProxy__propertyType), 17)
+        self.assertEqual(len(clazz1._RdfProxy__propertyRange), 17)
+        self.assertEqual(len(clazz1._RdfProxy__propertyBaseToFull), 17)
 
     def test_getObject(self):
         bro = RdfProxy.getObject("Brother")

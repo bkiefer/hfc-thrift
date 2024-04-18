@@ -88,19 +88,18 @@ class RdfProxy:
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
-        for uri in classmapping:
-            cls.__rdf2py[uri] = classmapping[uri]
-            cls.__py2rdf[classmapping[uri]] = uri
+        for uri, clazz in classmapping.items():
+            cls.__rdf2py[uri] = clazz
+            cls.__py2rdf[clazz] = uri
         classes = hfc.selectQuery("select ?clz where ?clz <rdf:type> <owl:Class> ?_")
         for s in classes.table.rows:
             uri = s[0]
-            ns, name = splitOwlUri(uri)
-            if uri not in classmapping:
-                if uri not in cls.__rdf2py:
-                    cls.__rdf2py[uri] = name
-                    cls.__py2rdf[name] = uri
-                else:
-                    logger.warning(f'{name} already in class dict, second URI {uri}, ignored')
+            _, name = splitOwlUri(uri)
+            if name not in cls.__py2rdf:
+                cls.__rdf2py[uri] = name
+                cls.__py2rdf[name] = uri
+            else:
+                logger.warning(f'{name} already in class dict, second URI {uri}, ignored')
 
     @classmethod
     def init_rdfproxy(cls, host='localhost', port=9090, classmapping=dict(), ns='dom:') -> None:
@@ -115,20 +114,23 @@ class RdfProxy:
         hfc.disconnect()
 
     @classmethod
-    def preload_propertyInfo(cls, uri: str):
+    def preload_propertyInfo(cls, class_uri: str):
         cls.__propertyRange = dict()
         cls.__propertyType = dict()
         cls.__propertyBaseToFull = dict()
         # todo: do it
-        propInfos = hfc.getAllProps(uri)
-        for prop in propInfos:
-            ns, name = xsdutils.splitOwlUri(prop)
-            cls.__propertyBaseToFull[name] = prop
-            cls.__propertyType[prop] = propInfos[prop].type
-            range = propInfos[prop].ranges
-            if len(range) == 1:
-                range = range[0]
-            cls.__propertyRange[name] = range
+        propInfos = hfc.getAllProps(class_uri)
+        for prop_uri, info in propInfos.items():
+            _, name = xsdutils.splitOwlUri(prop_uri)
+            if name not in cls.__propertyBaseToFull:
+                cls.__propertyBaseToFull[name] = prop_uri
+                cls.__propertyType[prop_uri] = info.type
+                range = info.ranges
+                if len(range) == 1:
+                    range = range[0]
+                cls.__propertyRange[name] = range
+            else:
+                logger.warning(f'{name} already in mapping, second URI {prop_uri}, ignored')
 
     @classmethod
     def getClass(cls, classname, uri):
