@@ -1,7 +1,7 @@
+import os
+import subprocess
 import sys
 import unittest
-import subprocess
-import os
 
 import xsdutils
 from rdfproxy import RdfProxy, classfactory
@@ -45,23 +45,23 @@ class UtilsTestCase(unittest.TestCase):
             xsdutils.python2xsd(None)
 
 
-proc = None
+class RdfProxyTestCase(unittest.TestCase):
+    proc: subprocess.Popen
 
-class MyTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         if sys.platform.startswith('linux'):
             # Linux specific procedures
-            global proc
+
             os.chdir("../../..")
             # start hfc server process
-            proc = subprocess.Popen(["/usr/bin/java",
-                                     "-Dlogback.configurationFile=./logback.xml",
-                                     "-jar", "target/hfc-server.jar",
-                                     "-p", "7777", "src/test/data/test.yml"]
-                                    , encoding="UTF-8", stdout=subprocess.PIPE)
-
-            for line in proc.stdout:
+            cls.proc = subprocess.Popen(["/usr/bin/java",
+                                         "-Dlogback.configurationFile=./logback.xml",
+                                         "-jar", "target/hfc-server.jar",
+                                         "-p", "7777", "src/test/data/test.yml"],
+                                        encoding="UTF-8",
+                                        stdout=subprocess.PIPE)
+            for line in (cls.proc.stdout or []):
                 if "Starting" in line:
                     print("HFC Server started successfully", flush=True)
                     break
@@ -77,55 +77,57 @@ class MyTestCase(unittest.TestCase):
 
         if sys.platform.startswith('linux'):
             # stop hfc server process
-            global proc
-            proc.terminate()
+            cls.proc.terminate()
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
-        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 218)
-        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 218)
+        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 218)  # type: ignore
+        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 218)  # type: ignore
         self.assertEqual(RdfProxy.namespace, 'dom:')
 
     def test_preload_classes(self):
         RdfProxy.preload_classes({'uri1': 'class1', 'uri2': 'class2'})
-        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri1'], 'class1')
-        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri2'], 'class2')
-        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class1'], 'uri1')
-        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class2'], 'uri2')
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri1'], 'class1')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri2'], 'class2')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class1'], 'uri1')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class2'], 'uri2')  # type: ignore
 
     def test_classfactory(self):
         clazz = classfactory('foo')
-        self.assertEqual(type(clazz), type)
+        self.assertTrue(isinstance(clazz, type))
         self.assertTrue(issubclass(clazz, RdfProxy))
+        self.assertEqual(str(clazz), "<class 'rdfproxy.foo'>")
 
     def test_getClass(self):
-        clazz1 = RdfProxy.getClass('Brother', '<dom:Brother>')
-        self.assertEqual(type(clazz1), type)
+        clazz1 = RdfProxy.getClass('<dom:Brother>')
+        self.assertTrue(isinstance(clazz1, type))
         self.assertTrue(issubclass(clazz1, RdfProxy))
-        self.assertEqual(len(clazz1._RdfProxy__propertyType), 17)
-        self.assertEqual(len(clazz1._RdfProxy__propertyRange), 17)
-        self.assertEqual(len(clazz1._RdfProxy__propertyBaseToFull), 17)
+        self.assertEqual(str(clazz1), "<class 'rdfproxy.Brother'>")
+        self.assertEqual(clazz1._RdfProxy__clazzuri, '<dom:Brother>')  # type: ignore
+        self.assertEqual(len(clazz1._RdfProxy__propertyType), 17)  # type: ignore
+        self.assertEqual(len(clazz1._RdfProxy__propertyRange), 17)  # type: ignore
+        self.assertEqual(len(clazz1._RdfProxy__propertyBaseToFull), 17)  # type: ignore
+        clazz2 = RdfProxy.getClass('<dom:Brother>')
+        self.assertIs(clazz1, clazz2)
 
     def test_getObject(self):
         bro = RdfProxy.getObject("Brother")
-        self.assertIsNotNone(bro)
-
-    def test_classcreation(self):
-        clz = RdfProxy.getClass("Child", "<dom:Child>")
-        self.assertTrue(isinstance(clz, type))
+        self.assertEqual(RdfProxy._RdfProxy__uri2pyclass[RdfProxy._RdfProxy__py2rdf['Brother']],  # type: ignore
+                         type(bro))
 
     def test_objectcreation(self):
-        newchild = RdfProxy.createProxy("Child", "<dom:Child>", "<dom:child_22>")
+        newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_22>")
         self.assertEqual(type(newchild).__name__, "Child")
+        self.assertEqual(str(type(newchild)), "<class 'rdfproxy.Child'>")
         self.assertEqual(newchild.uri, "<dom:child_22>")
         # now test the properties
         self.assertTrue(newchild.isFunctional("<dom:hasIntimacyLevel>"))
         newchild.hasIntimacyLevel = 0.7
 
     def test_relationalprop(self):
-        newchild = RdfProxy.createProxy("Child", "<dom:Child>", "<dom:child_22>")
-        bro1 = RdfProxy.createProxy("Brother", "<dom:Brother>", "<dom:bro_23>")
-        bro2 = RdfProxy.createProxy("Brother", "<dom:Brother>", "<dom:bro_24>")
+        newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_22>")
+        bro1 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_23>")
+        bro2 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_24>")
         newchild.hasBrother = [bro1, bro2]
         self.assertEqual(2, len(newchild.hasBrother))
         bro3 = RdfProxy.getObject("Brother")
@@ -138,4 +140,3 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

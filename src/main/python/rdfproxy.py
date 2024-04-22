@@ -1,4 +1,5 @@
 import logging
+from typing import Optional, Union, Type, cast, Any
 
 import xsdutils
 from hfcclient import connect, HfcClient
@@ -17,7 +18,7 @@ hfc: HfcClient
 
 
 class RdfProxy:
-    FUNCTIONAL_MASK = 4
+    FUNCTIONAL_MASK: int = 4
 
     # namespace to create new instances in
     namespace: str
@@ -27,22 +28,23 @@ class RdfProxy:
 
     # for classes (and properties?):
     # python object <-> HFC Uris
-    __rdf2py: dict = dict()
-    __py2rdf: dict = dict()
+    __rdf2py: dict[str, str] = dict()
+    __py2rdf: dict[str, str] = dict()
 
-    """All created RDF objects in the python memory"""
-    __uri2pyobject: dict = dict()
+    """All created RDF classes and objects in the python memory"""
+    __uri2pyclass: dict[str, type['RdfProxy']] = dict()
+    __uri2pyobject: dict[str, 'RdfProxy'] = dict()
 
     @classmethod
-    def getObject(cls, classname):
+    def getObject(cls, classname: str) -> 'RdfProxy':
         """ A factory method to create a new object in the RDF/python world"""
-        owlclassuri = cls.__py2rdf[classname]
-        uri = hfc.getNewId(cls.namespace, owlclassuri)
+        class_uri = cls.__py2rdf[classname]
+        instance_uri = hfc.getNewId(cls.namespace, class_uri)
         # create a python clazz object using "introspection"
-        return cls.createProxy(classname, owlclassuri, uri)
+        return cls.createProxy(class_uri, instance_uri)
 
     @classmethod
-    def rdf2pyobj(cls, uri: str):
+    def rdf2pyobj(cls, uri: str) -> Union[int, str, float, 'RdfProxy']:
         if isXsd(uri):
             return xsd2python(uri)
         else:
@@ -51,8 +53,8 @@ class RdfProxy:
                 return RdfProxy.__uri2pyobject[uri]
             else:
                 # get class of an instance value from HFC
-                owlclassuri = hfc.getClassOf(uri)
-                proxy = RdfProxy.createProxy(RdfProxy.__rdf2py[owlclassuri], owlclassuri, uri)
+                class_uri = hfc.getClassOf(uri)
+                proxy = RdfProxy.createProxy(RdfProxy.__rdf2py[class_uri], class_uri)
                 RdfProxy.__uri2pyobject[uri] = proxy
                 return proxy
 
@@ -73,7 +75,7 @@ class RdfProxy:
         return result
 
     @staticmethod
-    def python2rdf(object) -> str:
+    def python2rdf(object) -> str | list[Any]:
         """Return a rdf representation of this object (a string)"""
         if isinstance(object, RdfProxy):
             return object.__getattribute__('uri')
@@ -88,21 +90,22 @@ class RdfProxy:
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
-        for uri, clazz in classmapping.items():
-            cls.__rdf2py[uri] = clazz
-            cls.__py2rdf[clazz] = uri
+        for class_uri, clazz in classmapping.items():
+            cls.__rdf2py[class_uri] = clazz
+            cls.__py2rdf[clazz] = class_uri
         classes = hfc.selectQuery("select ?clz where ?clz <rdf:type> <owl:Class> ?_")
         for s in classes.table.rows:
-            uri = s[0]
-            _, name = splitOwlUri(uri)
-            if name not in cls.__py2rdf:
-                cls.__rdf2py[uri] = name
-                cls.__py2rdf[name] = uri
+            class_uri = s[0]
+            _, classname = splitOwlUri(class_uri)
+            if classname not in cls.__py2rdf:
+                cls.__rdf2py[class_uri] = classname
+                cls.__py2rdf[classname] = class_uri
             else:
-                logger.warning(f'{name} already in class dict, second URI {uri}, ignored')
+                logger.warning(f'{classname} already in class dict, second URI {class_uri} ignored')
 
     @classmethod
-    def init_rdfproxy(cls, host='localhost', port=9090, classmapping=dict(), ns='dom:') -> None:
+    def init_rdfproxy(cls, host: str = 'localhost', port: int = 9090, classmapping: dict[str, str] = dict(),
+                      ns: str = 'dom:') -> None:
         global hfc
 
         hfc = connect(host, port)
@@ -110,11 +113,11 @@ class RdfProxy:
         cls.preload_classes(classmapping)
 
     @classmethod
-    def shutdown_rdfproxy(cls):
+    def shutdown_rdfproxy(cls) -> None:
         hfc.disconnect()
 
     @classmethod
-    def preload_propertyInfo(cls, class_uri: str):
+    def preload_propertyInfo(cls, class_uri: str) -> None:
         cls.__propertyRange = dict()
         cls.__propertyType = dict()
         cls.__propertyBaseToFull = dict()
@@ -133,31 +136,29 @@ class RdfProxy:
                 logger.warning(f'{name} already in mapping, second URI {prop_uri}, ignored')
 
     @classmethod
-    def getClass(cls, classname, uri):
-        if classname not in globals():
-            # create a subclass of RdfProxy with name 'classname'
-            clazz = classfactory(classname)
-            clazz.__clazzuri = uri
-            clazz.preload_propertyInfo(uri)
+    def getClass(cls, class_uri: str) -> type['RdfProxy']:
+        if class_uri in cls.__uri2pyclass:
+            return cls.__uri2pyclass[class_uri]
         else:
-            clazz = globals()[classname]
-        if issubclass(clazz, RdfProxy):
+            # create a subclass of RdfProxy with name 'classname'
+            classname = cls.__rdf2py[class_uri]
+            clazz = classfactory(classname)
+            clazz.__clazzuri = class_uri
+            clazz.preload_propertyInfo(class_uri)
+            cls.__uri2pyclass[class_uri] = clazz
+            assert issubclass(clazz, RdfProxy)
             return clazz
-        return None
 
     @classmethod
-    def createProxy(cls, classname, class_uri, instance_uri):
+    def createProxy(cls, class_uri: str, instance_uri: str) -> 'RdfProxy':
         """
         create an object of the corresponding python class (a subclass of RdfProxy)
-        classname: the name of the python class
         class_uri: the uri of the RDF class the instance belongs to
         instance_uri: the uri of the instance
         """
-        if instance_uri in cls.__rdf2py:
-            return cls.__rdf2py[instance_uri]
-        clazz = RdfProxy.getClass(classname, class_uri)
-        if clazz == None:
-            return None
+        if instance_uri in cls.__uri2pyobject:
+            return cls.__uri2pyobject[instance_uri]
+        clazz = RdfProxy.getClass(class_uri)
         pyobj = clazz(instance_uri)
         RdfProxy.__uri2pyobject[instance_uri] = pyobj
         return pyobj
@@ -228,10 +229,10 @@ class RdfSet():
         return self
 
 
-def classfactory(classname):
+def classfactory(classname: str) -> type['RdfProxy']:
     newclass = type(classname, (RdfProxy,), {
 
         # constructor
         "__init__": RdfProxy.__init__,
     })
-    return newclass
+    return cast(Type[RdfProxy], newclass)
