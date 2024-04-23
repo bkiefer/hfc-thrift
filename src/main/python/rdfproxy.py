@@ -96,12 +96,15 @@ class RdfProxy:
         classes = hfc.selectQuery("select ?clz where ?clz <rdf:type> <owl:Class> ?_")
         for s in classes.table.rows:
             class_uri = s[0]
+            # has a name for the URI already been pre-set?
+            if class_uri in cls.__rdf2py:
+                continue
             _, classname = splitOwlUri(class_uri)
             if classname not in cls.__py2rdf:
                 cls.__rdf2py[class_uri] = classname
                 cls.__py2rdf[classname] = class_uri
             else:
-                logger.warning(f'{classname} already in class dict, second URI {class_uri} ignored')
+                logger.warning(f'{cls.__py2rdf[classname]} already in class dict, {class_uri} ignored')
 
     @classmethod
     def init_rdfproxy(cls, host: str = 'localhost', port: int = 9090, classmapping: dict[str, str] = dict(),
@@ -133,7 +136,7 @@ class RdfProxy:
                     range = range[0]
                 cls.__propertyRange[name] = range
             else:
-                logger.warning(f'{name} already in mapping, second URI {prop_uri}, ignored')
+                logger.warning(f'{cls.__propertyBaseToFull[name]} already in mapping, {prop_uri} ignored')
 
     @classmethod
     def getClass(cls, class_uri: str) -> type['RdfProxy']:

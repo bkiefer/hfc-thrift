@@ -4,7 +4,7 @@ import sys
 import unittest
 
 import xsdutils
-from rdfproxy import RdfProxy, classfactory
+from rdfproxy import RdfProxy, classfactory, logger
 
 
 class UtilsTestCase(unittest.TestCase):
@@ -63,13 +63,18 @@ class RdfProxyTestCase(unittest.TestCase):
                                         stdout=subprocess.PIPE)
             for line in (cls.proc.stdout or []):
                 if "Starting" in line:
-                    print("HFC Server started successfully", flush=True)
+                    logger.info("HFC Server started successfully")
                     break
         else:
-            print('Make sure HFC server is running on port 7777 using test.yml configuration')
+            logger.error('Make sure HFC server is running on port 7777 using test.yml configuration')
 
         # don't use default port: PAL hfc service uses it.
-        RdfProxy.init_rdfproxy('localhost', 7777)
+        RdfProxy.init_rdfproxy('localhost', 7777,
+                               {'<tml:Event>': 'TmlEvent',
+                                '<upper:Entity>': 'UpperEntity',
+                                '<dial:Correction>': 'DialCorrection',
+                                '<tml:Timeline>': 'TmlTimeline',
+                                '<dom:Food>': 'DomFood'})
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -81,16 +86,16 @@ class RdfProxyTestCase(unittest.TestCase):
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
-        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 218)  # type: ignore
-        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 218)  # type: ignore
+        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 223)  # type: ignore
+        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 223)  # type: ignore
         self.assertEqual(RdfProxy.namespace, 'dom:')
 
     def test_preload_classes(self):
-        RdfProxy.preload_classes({'uri1': 'class1', 'uri2': 'class2'})
-        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri1'], 'class1')  # type: ignore
-        self.assertEqual(RdfProxy._RdfProxy__rdf2py['uri2'], 'class2')  # type: ignore
-        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class1'], 'uri1')  # type: ignore
-        self.assertEqual(RdfProxy._RdfProxy__py2rdf['class2'], 'uri2')  # type: ignore
+        # pre-defined class mappings have been given at test class setup, test them here
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['<tml:Timeline>'], 'TmlTimeline')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__rdf2py['<upper:Entity>'], 'UpperEntity')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['TmlTimeline'], '<tml:Timeline>')  # type: ignore
+        self.assertEqual(RdfProxy._RdfProxy__py2rdf['UpperEntity'], '<upper:Entity>')  # type: ignore
 
     def test_classfactory(self):
         clazz = classfactory('foo')

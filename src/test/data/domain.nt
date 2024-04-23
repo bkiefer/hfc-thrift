@@ -965,3 +965,4 @@ _:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/19
 <http://www.w3.org/2001/XMLSchema#min-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
 <http://www.w3.org/2001/XMLSchema#mmHg> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
 <http://www.w3.org/2001/XMLSchema#mmol_L> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
+<http://www.dfki.de/lt/onto/common/upper.owl#name> <http://www.w3.org/2002/07/owl#equivalentProperty> <http://www.dfki.de/lt/onto/pal/domain.owl#name> .
