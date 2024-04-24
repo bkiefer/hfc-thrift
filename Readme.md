@@ -8,6 +8,10 @@
 
    `mvn install`
 
+4. If you also want to use the python bridge, install version 0.19.0 of
+   [Apache Thrift](https://thrift.apache.org/) on your computer. You will need
+   the thrift python libraries installed to use it.
+
 ## Start server
 
 `./bin/startServer src/test/data/test.yml`
