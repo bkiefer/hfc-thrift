@@ -166,6 +166,23 @@ class RdfProxy:
         RdfProxy.__uri2pyobject[instance_uri] = pyobj
         return pyobj
 
+    @classmethod
+    def askQuery(cls, query: str) -> bool:
+        return hfc.askQuery(query)
+    @classmethod
+    def selectQuery(cls, query):
+        queryResult = hfc.selectQuery(query)
+        table = []
+        for table_row in queryResult.table.rows:
+            row = []
+            for elt in table_row:
+                row.append(cls.rdf2pyobj(elt))
+            table.append(row)
+
+    @classmethod
+    def query(cls, query: str) -> list(str):
+        return hfc.query(query)
+    
     def __init__(self, uri=None):
         super(__class__, self).__setattr__("uri", uri)  # my uri
 
