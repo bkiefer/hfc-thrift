@@ -100,6 +100,11 @@ class HfcDbServiceHandler : virtual public HfcDbServiceIf {
     printf("getAllProps\n");
   }
 
+  void getClassOf(std::string& _return, const std::string& uri) {
+    // Your implementation goes here
+    printf("getClassOf\n");
+  }
+
 };
 
 int main(int argc, char **argv) {

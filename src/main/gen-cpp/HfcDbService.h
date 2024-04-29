@@ -38,6 +38,7 @@ class HfcDbServiceIf {
   virtual int32_t setValue(const std::string& uri, const std::string& predicate, const std::string& value) = 0;
   virtual void getValue(std::string& _return, const std::string& uri, const std::string& predicate) = 0;
   virtual void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) = 0;
+  virtual void getClassOf(std::string& _return, const std::string& uri) = 0;
 };
 
 class HfcDbServiceIfFactory {
@@ -123,6 +124,9 @@ class HfcDbServiceNull : virtual public HfcDbServiceIf {
     return;
   }
   void getAllProps(std::map<std::string, PropInfo> & /* _return */, const std::string& /* classuri */) override {
+    return;
+  }
+  void getClassOf(std::string& /* _return */, const std::string& /* uri */) override {
     return;
   }
 };
@@ -2019,6 +2023,112 @@ class HfcDbService_getAllProps_presult {
 
 };
 
+typedef struct _HfcDbService_getClassOf_args__isset {
+  _HfcDbService_getClassOf_args__isset() : uri(false) {}
+  bool uri :1;
+} _HfcDbService_getClassOf_args__isset;
+
+class HfcDbService_getClassOf_args {
+ public:
+
+  HfcDbService_getClassOf_args(const HfcDbService_getClassOf_args&);
+  HfcDbService_getClassOf_args& operator=(const HfcDbService_getClassOf_args&);
+  HfcDbService_getClassOf_args() noexcept
+                               : uri() {
+  }
+
+  virtual ~HfcDbService_getClassOf_args() noexcept;
+  std::string uri;
+
+  _HfcDbService_getClassOf_args__isset __isset;
+
+  void __set_uri(const std::string& val);
+
+  bool operator == (const HfcDbService_getClassOf_args & rhs) const
+  {
+    if (!(uri == rhs.uri))
+      return false;
+    return true;
+  }
+  bool operator != (const HfcDbService_getClassOf_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_getClassOf_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class HfcDbService_getClassOf_pargs {
+ public:
+
+
+  virtual ~HfcDbService_getClassOf_pargs() noexcept;
+  const std::string* uri;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _HfcDbService_getClassOf_result__isset {
+  _HfcDbService_getClassOf_result__isset() : success(false) {}
+  bool success :1;
+} _HfcDbService_getClassOf_result__isset;
+
+class HfcDbService_getClassOf_result {
+ public:
+
+  HfcDbService_getClassOf_result(const HfcDbService_getClassOf_result&);
+  HfcDbService_getClassOf_result& operator=(const HfcDbService_getClassOf_result&);
+  HfcDbService_getClassOf_result() noexcept
+                                 : success() {
+  }
+
+  virtual ~HfcDbService_getClassOf_result() noexcept;
+  std::string success;
+
+  _HfcDbService_getClassOf_result__isset __isset;
+
+  void __set_success(const std::string& val);
+
+  bool operator == (const HfcDbService_getClassOf_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const HfcDbService_getClassOf_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_getClassOf_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _HfcDbService_getClassOf_presult__isset {
+  _HfcDbService_getClassOf_presult__isset() : success(false) {}
+  bool success :1;
+} _HfcDbService_getClassOf_presult__isset;
+
+class HfcDbService_getClassOf_presult {
+ public:
+
+
+  virtual ~HfcDbService_getClassOf_presult() noexcept;
+  std::string* success;
+
+  _HfcDbService_getClassOf_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class HfcDbServiceClient : virtual public HfcDbServiceIf {
  public:
   HfcDbServiceClient(std::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -2092,6 +2202,9 @@ class HfcDbServiceClient : virtual public HfcDbServiceIf {
   void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) override;
   void send_getAllProps(const std::string& classuri);
   void recv_getAllProps(std::map<std::string, PropInfo> & _return);
+  void getClassOf(std::string& _return, const std::string& uri) override;
+  void send_getClassOf(const std::string& uri);
+  void recv_getClassOf(std::string& _return);
  protected:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -2123,6 +2236,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   void process_setValue(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getValue(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getAllProps(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_getClassOf(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   HfcDbServiceProcessor(::std::shared_ptr<HfcDbServiceIf> iface) :
     iface_(iface) {
@@ -2142,6 +2256,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
     processMap_["setValue"] = &HfcDbServiceProcessor::process_setValue;
     processMap_["getValue"] = &HfcDbServiceProcessor::process_getValue;
     processMap_["getAllProps"] = &HfcDbServiceProcessor::process_getAllProps;
+    processMap_["getClassOf"] = &HfcDbServiceProcessor::process_getClassOf;
   }
 
   virtual ~HfcDbServiceProcessor() {}
@@ -2320,6 +2435,16 @@ class HfcDbServiceMultiface : virtual public HfcDbServiceIf {
     return;
   }
 
+  void getClassOf(std::string& _return, const std::string& uri) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->getClassOf(_return, uri);
+    }
+    ifaces_[i]->getClassOf(_return, uri);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -2400,6 +2525,9 @@ class HfcDbServiceConcurrentClient : virtual public HfcDbServiceIf {
   void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) override;
   int32_t send_getAllProps(const std::string& classuri);
   void recv_getAllProps(std::map<std::string, PropInfo> & _return, const int32_t seqid);
+  void getClassOf(std::string& _return, const std::string& uri) override;
+  int32_t send_getClassOf(const std::string& uri);
+  void recv_getClassOf(std::string& _return, const int32_t seqid);
  protected:
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   std::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

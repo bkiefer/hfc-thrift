@@ -1,8 +1,6 @@
 package de.dfki.lt.hfc.db.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -18,6 +16,7 @@ import de.dfki.lt.hfc.db.QueryResult;
 import de.dfki.lt.hfc.db.Table;
 import de.dfki.lt.hfc.db.TupleException;
 import de.dfki.lt.hfc.db.client.HfcDbClient;
+import de.dfki.lt.hfc.db.remote.HfcDbService;
 
 public class TestClient {
   private static HfcDbServer server;
@@ -143,6 +142,19 @@ public class TestClient {
         "\"John\"^^<xsd:string>"));
     assertEquals("\"John\"^^<xsd:string>", client._client.getValue(
         "<rifca:Child_0>", "<dom:forename>"));
+  }
+
+  /**
+   * Test of getRdf method, of class RdfProxy.
+   * @throws TException
+   *
+   * @throws java.lang.Exception
+   */
+  @Test
+  public void testGetRdf() throws TException {
+    String child = "<rifca:Child_0>";
+    String clazzuri = ((ClientAdapter)client._client).getClassOf(child);
+    assertEquals("<dom:Child>", clazzuri);
   }
 
   /*

@@ -15,7 +15,7 @@ import de.dfki.lt.hfc.db.remote.HfcDbService;
 /** Turn a client that talks over the network into a HFC-only client */
 public class ClientAdapter implements DbClient {
   private static Logger logger = LoggerFactory.getLogger(ClientAdapter.class);
-  
+
   private HfcDbService.Client _client;
 
   public ClientAdapter(HfcDbService.Client client) {
@@ -137,7 +137,15 @@ public class ClientAdapter implements DbClient {
       throw new RuntimeException(ex);
     }
   }
-  
+
+  public String getClassOf(String uri) {
+    try {
+      return _client.getClassOf(uri);
+    } catch (TException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
   @Override
   public void registerStreamingClient(StreamingClient c) {
     // TODO this should register a StreamingClient that also works remotely!

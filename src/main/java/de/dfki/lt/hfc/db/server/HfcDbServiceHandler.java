@@ -177,4 +177,9 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
     }
     return result;
   }
+
+  public String getClassOf(String uri) {
+    RdfProxy proxy = new RdfProxy(_h);
+    return proxy.getMostSpecificClass(uri).toString();
+  }
 }

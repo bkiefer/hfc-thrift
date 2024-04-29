@@ -40,6 +40,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('  i32 setValue(string uri, string predicate, string value)')
     print('  string getValue(string uri, string predicate)')
     print('   getAllProps(string classuri)')
+    print('  string getClassOf(string uri)')
     print('')
     sys.exit(0)
 
@@ -214,6 +215,12 @@ elif cmd == 'getAllProps':
         print('getAllProps requires 1 args')
         sys.exit(1)
     pp.pprint(client.getAllProps(args[0],))
+
+elif cmd == 'getClassOf':
+    if len(args) != 1:
+        print('getClassOf requires 1 args')
+        sys.exit(1)
+    pp.pprint(client.getClassOf(args[0],))
 
 else:
     print('Unrecognized method %s' % cmd)

@@ -29,7 +29,7 @@
     <dependency>
       <groupId>de.dfki.lt.hfc</groupId>
       <artifactId>hfc</artifactId>
-      <version>[1.5.3,)</version>
+      <version>[1.5.4,)</version>
       <type>jar</type>
     </dependency>
 
