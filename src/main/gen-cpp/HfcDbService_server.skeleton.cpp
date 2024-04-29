@@ -25,6 +25,11 @@ class HfcDbServiceHandler : virtual public HfcDbServiceIf {
     printf("ping\n");
   }
 
+  void init(const std::string& config_path) {
+    // Your implementation goes here
+    printf("init\n");
+  }
+
   bool addNamespace(const std::string& shortForm, const std::string& longForm) {
     // Your implementation goes here
     printf("addNamespace\n");

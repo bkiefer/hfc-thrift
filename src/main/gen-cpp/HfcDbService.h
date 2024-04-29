@@ -23,6 +23,7 @@ class HfcDbServiceIf {
  public:
   virtual ~HfcDbServiceIf() {}
   virtual int32_t ping() = 0;
+  virtual void init(const std::string& config_path) = 0;
   virtual bool addNamespace(const std::string& shortForm, const std::string& longForm) = 0;
   virtual int32_t insertPlain(const Table& t) = 0;
   virtual void selectQuery(QueryResult& _return, const std::string& query) = 0;
@@ -71,6 +72,9 @@ class HfcDbServiceNull : virtual public HfcDbServiceIf {
   int32_t ping() override {
     int32_t _return = 0;
     return _return;
+  }
+  void init(const std::string& /* config_path */) override {
+    return;
   }
   bool addNamespace(const std::string& /* shortForm */, const std::string& /* longForm */) override {
     bool _return = false;
@@ -219,6 +223,93 @@ class HfcDbService_ping_presult {
   int32_t* success;
 
   _HfcDbService_ping_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
+typedef struct _HfcDbService_init_args__isset {
+  _HfcDbService_init_args__isset() : config_path(false) {}
+  bool config_path :1;
+} _HfcDbService_init_args__isset;
+
+class HfcDbService_init_args {
+ public:
+
+  HfcDbService_init_args(const HfcDbService_init_args&);
+  HfcDbService_init_args& operator=(const HfcDbService_init_args&);
+  HfcDbService_init_args() noexcept
+                         : config_path() {
+  }
+
+  virtual ~HfcDbService_init_args() noexcept;
+  std::string config_path;
+
+  _HfcDbService_init_args__isset __isset;
+
+  void __set_config_path(const std::string& val);
+
+  bool operator == (const HfcDbService_init_args & rhs) const
+  {
+    if (!(config_path == rhs.config_path))
+      return false;
+    return true;
+  }
+  bool operator != (const HfcDbService_init_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_init_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class HfcDbService_init_pargs {
+ public:
+
+
+  virtual ~HfcDbService_init_pargs() noexcept;
+  const std::string* config_path;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class HfcDbService_init_result {
+ public:
+
+  HfcDbService_init_result(const HfcDbService_init_result&) noexcept;
+  HfcDbService_init_result& operator=(const HfcDbService_init_result&) noexcept;
+  HfcDbService_init_result() noexcept {
+  }
+
+  virtual ~HfcDbService_init_result() noexcept;
+
+  bool operator == (const HfcDbService_init_result & /* rhs */) const
+  {
+    return true;
+  }
+  bool operator != (const HfcDbService_init_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_init_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class HfcDbService_init_presult {
+ public:
+
+
+  virtual ~HfcDbService_init_presult() noexcept;
 
   uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
 
@@ -2157,6 +2248,9 @@ class HfcDbServiceClient : virtual public HfcDbServiceIf {
   int32_t ping() override;
   void send_ping();
   int32_t recv_ping();
+  void init(const std::string& config_path) override;
+  void send_init(const std::string& config_path);
+  void recv_init();
   bool addNamespace(const std::string& shortForm, const std::string& longForm) override;
   void send_addNamespace(const std::string& shortForm, const std::string& longForm);
   bool recv_addNamespace();
@@ -2221,6 +2315,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   typedef std::map<std::string, ProcessFunction> ProcessMap;
   ProcessMap processMap_;
   void process_ping(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_init(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_addNamespace(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_insertPlain(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_selectQuery(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
@@ -2241,6 +2336,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   HfcDbServiceProcessor(::std::shared_ptr<HfcDbServiceIf> iface) :
     iface_(iface) {
     processMap_["ping"] = &HfcDbServiceProcessor::process_ping;
+    processMap_["init"] = &HfcDbServiceProcessor::process_init;
     processMap_["addNamespace"] = &HfcDbServiceProcessor::process_addNamespace;
     processMap_["insertPlain"] = &HfcDbServiceProcessor::process_insertPlain;
     processMap_["selectQuery"] = &HfcDbServiceProcessor::process_selectQuery;
@@ -2292,6 +2388,15 @@ class HfcDbServiceMultiface : virtual public HfcDbServiceIf {
       ifaces_[i]->ping();
     }
     return ifaces_[i]->ping();
+  }
+
+  void init(const std::string& config_path) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->init(config_path);
+    }
+    ifaces_[i]->init(config_path);
   }
 
   bool addNamespace(const std::string& shortForm, const std::string& longForm) override {
@@ -2480,6 +2585,9 @@ class HfcDbServiceConcurrentClient : virtual public HfcDbServiceIf {
   int32_t ping() override;
   int32_t send_ping();
   int32_t recv_ping(const int32_t seqid);
+  void init(const std::string& config_path) override;
+  int32_t send_init(const std::string& config_path);
+  void recv_init(const int32_t seqid);
   bool addNamespace(const std::string& shortForm, const std::string& longForm) override;
   int32_t send_addNamespace(const std::string& shortForm, const std::string& longForm);
   bool recv_addNamespace(const int32_t seqid);

@@ -26,10 +26,10 @@ import de.dfki.lt.hfc.db.remote.Table;
 
 /** SERVER-SIDE IMPLEMENTATION OF THE THRIFT API */
 public class HfcDbServiceHandler implements HfcDbService.Iface {
-  protected final HfcDbHandler _h;
+  protected HfcDbHandler _h;
 
   protected HfcDbServiceHandler(String configPath) {
-    _h = new HfcDbHandler(configPath);
+    init(configPath);
   }
 
   protected static Logger logger = LoggerFactory.getLogger(HfcDbServiceHandler.class);
@@ -80,6 +80,9 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
     _h.dump(name);
   }
 
+  public void init(String configPath) {
+    _h = new HfcDbHandler(configPath);
+  }
 
   @Override
   public int removeFromMultiValue(String uri, String property, String childUri) {
@@ -178,6 +181,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
     return result;
   }
 
+  @Override
   public String getClassOf(String uri) {
     RdfProxy proxy = new RdfProxy(_h);
     return proxy.getMostSpecificClass(uri).toString();

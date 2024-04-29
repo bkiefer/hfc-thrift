@@ -35,6 +35,9 @@ service HfcDbService {
   // see if service is alive
   i32 ping(),
 
+  // reset service
+  void init(1: string config_path),
+
   // promote a namespace mapping to the server for further uploading of tuples
   bool addNamespace(1: string shortForm, 2: string longForm),
 

@@ -22,6 +22,14 @@ class Iface(object):
     def ping(self):
         pass
 
+    def init(self, config_path):
+        """
+        Parameters:
+         - config_path
+
+        """
+        pass
+
     def addNamespace(self, shortForm, longForm):
         """
         Parameters:
@@ -196,6 +204,36 @@ class Client(Iface):
         if result.success is not None:
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "ping failed: unknown result")
+
+    def init(self, config_path):
+        """
+        Parameters:
+         - config_path
+
+        """
+        self.send_init(config_path)
+        self.recv_init()
+
+    def send_init(self, config_path):
+        self._oprot.writeMessageBegin('init', TMessageType.CALL, self._seqid)
+        args = init_args()
+        args.config_path = config_path
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_init(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = init_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        return
 
     def addNamespace(self, shortForm, longForm):
         """
@@ -769,6 +807,7 @@ class Processor(Iface, TProcessor):
         self._handler = handler
         self._processMap = {}
         self._processMap["ping"] = Processor.process_ping
+        self._processMap["init"] = Processor.process_init
         self._processMap["addNamespace"] = Processor.process_addNamespace
         self._processMap["insertPlain"] = Processor.process_insertPlain
         self._processMap["selectQuery"] = Processor.process_selectQuery
@@ -826,6 +865,29 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("ping", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_init(self, seqid, iprot, oprot):
+        args = init_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = init_result()
+        try:
+            self._handler.init(args.config_path)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("init", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -1344,6 +1406,111 @@ class ping_result(object):
 all_structs.append(ping_result)
 ping_result.thrift_spec = (
     (0, TType.I32, 'success', None, None, ),  # 0
+)
+
+
+class init_args(object):
+    """
+    Attributes:
+     - config_path
+
+    """
+
+
+    def __init__(self, config_path=None,):
+        self.config_path = config_path
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.config_path = iprot.readString().decode('utf-8', errors='replace') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('init_args')
+        if self.config_path is not None:
+            oprot.writeFieldBegin('config_path', TType.STRING, 1)
+            oprot.writeString(self.config_path.encode('utf-8') if sys.version_info[0] == 2 else self.config_path)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(init_args)
+init_args.thrift_spec = (
+    None,  # 0
+    (1, TType.STRING, 'config_path', 'UTF8', None, ),  # 1
+)
+
+
+class init_result(object):
+
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('init_result')
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(init_result)
+init_result.thrift_spec = (
 )
 
 
