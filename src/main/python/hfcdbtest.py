@@ -135,11 +135,13 @@ class RdfProxyTestCase(unittest.TestCase):
         newchild.hasIntimacyLevel = 0.7
 
     def test_relationalprop(self):
-        newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_22>")
+        newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_23>")
         bro1 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_23>")
         bro2 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_24>")
         newchild.hasBrother = [bro1, bro2]
         self.assertEqual(2, len(newchild.hasBrother))
+        bros = RdfProxy.selectQuery(f"select ?b where {newchild.uri} <dom:hasBrother> ?b ?_")
+        self.assertEqual(2, len(bros))
         bro3 = RdfProxy.getObject("Brother")
         newchild.hasBrother.add(bro3)
         self.assertEqual(3, len(newchild.hasBrother))
