@@ -54,7 +54,7 @@ class RdfProxy:
             else:
                 # get class of an instance value from HFC
                 class_uri = hfc.getClassOf(uri)
-                proxy = RdfProxy.createProxy(RdfProxy.__rdf2py[class_uri], class_uri)
+                proxy = RdfProxy.createProxy(class_uri, uri)
                 RdfProxy.__uri2pyobject[uri] = proxy
                 return proxy
 
@@ -146,7 +146,7 @@ class RdfProxy:
             # create a subclass of RdfProxy with name 'classname'
             classname = cls.__rdf2py[class_uri]
             clazz = classfactory(classname)
-            clazz.__clazzuri = class_uri
+            clazz.__clazzuri = class_uri  # type: ignore
             clazz.preload_propertyInfo(class_uri)
             cls.__uri2pyclass[class_uri] = clazz
             assert issubclass(clazz, RdfProxy)
@@ -172,22 +172,35 @@ class RdfProxy:
 
     @classmethod
     def selectQuery(cls, query):
-        queryResult = hfc.selectQuery(query)
+        query_result = hfc.selectQuery(query)
         table = []
-        if not queryResult.table.rows or len(queryResult.table.rows[0]) == 0:
+        if not query_result.table.rows or len(query_result.table.rows[0]) == 0:
             return None
-        for table_row in queryResult.table.rows:
+        for table_row in query_result.table.rows:
             if len(table_row) > 1:
                 row = []
                 for elt in table_row:
                     row.append(cls.rdf2pyobj(elt))
             else:
-                row = cls.rdf2pyobj(row[0])
+                row = cls.rdf2pyobj(table_row[0])
             table.append(row)
+        return table
 
     @classmethod
-    def query(cls, query: str) -> list(str):
-        return hfc.query(query)
+    def query(cls, query: str):
+        query_result = hfc.selectQuery(query)
+        table = []
+        if not query_result.table.rows or len(query_result.table.rows[0]) == 0:
+            return None
+        for table_row in query_result.table.rows:
+            if len(table_row) > 1:
+                row = []
+                for elt in table_row:
+                    row.append(elt)
+            else:
+                row = table_row[0]
+            table.append(row)
+        return table
 
     def __init__(self, uri=None):
         super(__class__, self).__setattr__("uri", uri)  # my uri
@@ -217,9 +230,9 @@ class RdfProxy:
 class RdfSet():
 
     def __init__(self, subj, pred_uri, pyobjlist):
-        self.__storage = set(pyobjlist)
-        self.__subject = subj
-        self.__pred_uri = pred_uri
+        self.__storage: set = set(pyobjlist)
+        self.__subject: str = subj
+        self.__pred_uri: str  = pred_uri
 
     def __add_in_hfc(self, pyobj):
         rdfobj = RdfProxy.python2rdf(pyobj)
