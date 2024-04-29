@@ -5,6 +5,7 @@ import unittest
 
 import xsdutils
 from rdfproxy import RdfProxy, classfactory, logger
+import rdfproxy
 
 
 class UtilsTestCase(unittest.TestCase):
@@ -83,6 +84,10 @@ class RdfProxyTestCase(unittest.TestCase):
         if sys.platform.startswith('linux'):
             # stop hfc server process
             cls.proc.terminate()
+
+    def setUp(self):
+        if not sys.platform.startswith('linux'):
+            rdfproxy.hfc.init("src/test/data/test.yml")
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
