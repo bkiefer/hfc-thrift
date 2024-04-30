@@ -2,6 +2,8 @@ package de.dfki.lt.hfc.db.server;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -16,7 +18,6 @@ import de.dfki.lt.hfc.db.QueryResult;
 import de.dfki.lt.hfc.db.Table;
 import de.dfki.lt.hfc.db.TupleException;
 import de.dfki.lt.hfc.db.client.HfcDbClient;
-import de.dfki.lt.hfc.db.remote.HfcDbService;
 
 public class TestClient {
   private static HfcDbServer server;
@@ -37,7 +38,8 @@ public class TestClient {
   }
 
   @Test
-  public void testInsert() throws TupleException, TException, InterruptedException {
+  public void testInsert()
+      throws TupleException, TException, InterruptedException, IOException {
     Table t = new Table();
     String[] row = {"<dom:child_2>", "<rdf:type>", "<dom:Child>"};
     t.addToRows(Arrays.asList(row));
@@ -49,7 +51,12 @@ public class TestClient {
     assertEquals(2,
         client.query("select ?p ?o where <dom:child_2> ?p ?o ?time ")
         .getTable().getRowsSize());
-
+    // now also test restart
+    client.initServer(TestUtils.RESOURCE_DIR + "test.yml");
+    client.loadTuples(new File(TestUtils.RESOURCE_DIR + "rifca.nt"));
+    assertEquals(0,
+        client.query("select ?p ?o where <dom:child_2> ?p ?o ?time ")
+        .getTable().getRowsSize());
   }
 
   @Test
@@ -151,7 +158,7 @@ public class TestClient {
    * @throws java.lang.Exception
    */
   @Test
-  public void testGetRdf() throws TException {
+  public void testGetClassOf() throws TException {
     String child = "<rifca:Child_0>";
     String clazzuri = ((ClientAdapter)client._client).getClassOf(child);
     assertEquals("<dom:Child>", clazzuri);

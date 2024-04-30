@@ -27,6 +27,7 @@ import de.dfki.lt.hfc.db.remote.Table;
 /** SERVER-SIDE IMPLEMENTATION OF THE THRIFT API */
 public class HfcDbServiceHandler implements HfcDbService.Iface {
   protected HfcDbHandler _h;
+  protected RdfProxy _proxy;
 
   protected HfcDbServiceHandler(String configPath) {
     init(configPath);
@@ -86,6 +87,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
       _h.shutdownNoExit();
     }
     _h = new HfcDbHandler(configPath);
+    _proxy = new RdfProxy(_h);
   }
 
   @Override
@@ -174,8 +176,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
 
   @Override
   public Map<String, PropInfo> getAllProps(String classuri) {
-    RdfProxy proxy = new RdfProxy(_h);
-    RdfClass clazz = proxy.getClass(classuri);
+    RdfClass clazz = _proxy.getClass(classuri);
     Map<String, PropInfo> result = new HashMap<>();
     for (String prop : clazz.getProperties()) {
       int type = clazz.getPropertyType(prop);
@@ -187,7 +188,6 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
 
   @Override
   public String getClassOf(String uri) {
-    RdfProxy proxy = new RdfProxy(_h);
-    return proxy.getMostSpecificClass(uri).toString();
+    return _proxy.getMostSpecificClass(uri).toString();
   }
 }

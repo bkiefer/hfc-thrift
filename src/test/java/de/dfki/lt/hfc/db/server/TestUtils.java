@@ -11,25 +11,29 @@ import de.dfki.lt.hfc.db.rpc.RPCFactory;
 
 public class TestUtils {
 
-  private static final String RESOURCE_DIR = "src/test/data/";
+  public static final String RESOURCE_DIR = "src/test/data/";
 
   public static final int SERVER_PORT = 8994;
 
   public static HfcDbServer startServer(int port) {
+    return startServer(port, RESOURCE_DIR + "test.yml", RESOURCE_DIR + "rifca.yml");
+  }
+
+  public static HfcDbServer startServer(int port, String ontoConf, String dataConf) {
     try {
-      HfcDbServer server = new HfcDbServer(RESOURCE_DIR + "test.yml");
+      HfcDbServer server = new HfcDbServer(ontoConf);
       server.runServer(port);
       // this client is used only to inject user data, not for the tests!
       HfcDbClient client = new HfcDbClient();
       client.init("localhost", port);
-      client.readConfig(new File(RESOURCE_DIR + "rifca.yml"));
+      if (dataConf != null)
+        client.readConfig(new File(dataConf));
       return server;
     }
     catch (Exception ex) {
       throw new RuntimeException(ex);
     }
   }
-
 
   public static void shutdownServer(HfcDbServer server) {
     server.shutdown();

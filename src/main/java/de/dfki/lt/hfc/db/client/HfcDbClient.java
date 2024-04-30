@@ -73,6 +73,10 @@ public class HfcDbClient {
     return _client.selectQuery(query);
   }
 
+  public void initServer(String config) throws TException {
+    remoteClient.init(config);
+  }
+
   /* If that should make sense, the namespace has to be promoted to the
    * server
    *
