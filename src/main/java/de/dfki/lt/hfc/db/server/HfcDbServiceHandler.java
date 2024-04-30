@@ -80,7 +80,11 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
     _h.dump(name);
   }
 
+  @Override
   public void init(String configPath) {
+    if (_h != null) {
+      _h.shutdownNoExit();
+    }
     _h = new HfcDbHandler(configPath);
   }
 
