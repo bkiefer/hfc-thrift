@@ -79,12 +79,13 @@ class RdfProxy:
         """Return a rdf representation of this object (a string)"""
         if isinstance(object, RdfProxy):
             return object.__getattribute__('uri')
-        else:
+        elif isinstance(object, list) or isinstance(object, set):
             try:
                 it = iter(object)
                 return [RdfProxy.python2rdf(val) for val in it]
             except TypeError as te:
                 pass
+        else:
             # now it better be an XSD compatible datatype
             return python2xsd(object)
 
