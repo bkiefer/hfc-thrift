@@ -142,6 +142,7 @@ class RdfProxyTestCase(unittest.TestCase):
         self.assertEqual(2, len(newchild.hasBrother))
         bros = RdfProxy.selectQuery(f"select ?b where {newchild.uri} <dom:hasBrother> ?b ?_")
         self.assertEqual(2, len(bros))
+        self.assertTrue(bro1 in bros and bro2 in bros)
         bro3 = RdfProxy.getObject("Brother")
         newchild.hasBrother.add(bro3)
         self.assertEqual(3, len(newchild.hasBrother))
