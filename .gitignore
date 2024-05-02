@@ -20,3 +20,5 @@ cmake_install.cmake
 nbactions.xml
 /Aufbewahrung/
 **/__pycache__/*
+**/build/
+**/*.egg-info
