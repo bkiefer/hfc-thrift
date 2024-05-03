@@ -1,5 +1,5 @@
 import logging
-from typing import Union, Type, cast, Any
+from typing import Iterable, Union, Type, cast, Any
 
 from hfc_thrift.hfcclient import connect, HfcClient
 from hfc_thrift.xsdutils import isXsd, xsd2python, python2xsd, splitOwlUri
@@ -57,7 +57,7 @@ class RdfProxy:
                 RdfProxy.__uri2pyobject[uri] = proxy
                 return proxy
 
-    def get_rdf_as_pyobj(self, prop_uri: str):
+    def get_rdf_as_pyobj(self, prop_uri: str) -> Union[int, str, float, 'RdfProxy']:
         """Turn arbitrary xsd value or uri into python object.
            If value is an uri, this may result in a recursive call
            (currently not)"""
@@ -87,6 +87,7 @@ class RdfProxy:
         else:
             # now it better be an XSD compatible datatype
             return python2xsd(object)
+        return []
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
@@ -94,7 +95,7 @@ class RdfProxy:
             cls.__rdf2py[class_uri] = clazz
             cls.__py2rdf[clazz] = class_uri
         classes = hfc.selectQuery("select ?clz where ?clz <rdf:type> <owl:Class> ?_")
-        for s in classes.table.rows:
+        for s in classes.table.rows:  # type: ignore
             class_uri = s[0]
             # has a name for the URI already been pre-set?
             if class_uri in cls.__rdf2py:
@@ -171,11 +172,11 @@ class RdfProxy:
         return hfc.askQuery(query)
 
     @classmethod
-    def selectQuery(cls, query):
+    def selectQuery(cls, query: str) -> list[Any]:
         query_result = hfc.selectQuery(query)
         table = []
-        if not query_result.table.rows or len(query_result.table.rows[0]) == 0:
-            return None
+        if not query_result.table or not query_result.table.rows or len(query_result.table.rows[0]) == 0:
+            return []
         for table_row in query_result.table.rows:
             if len(table_row) > 1:
                 row = []
@@ -190,7 +191,7 @@ class RdfProxy:
     def query(cls, query: str):
         query_result = hfc.selectQuery(query)
         table = []
-        if not query_result.table.rows or len(query_result.table.rows[0]) == 0:
+        if not query_result.table or not query_result.table.rows or len(query_result.table.rows[0]) == 0:
             return None
         for table_row in query_result.table.rows:
             if len(table_row) > 1:
@@ -229,9 +230,9 @@ class RdfProxy:
 
 class RdfSet():
 
-    def __init__(self, subj, pred_uri, pyobjlist):
+    def __init__(self, subj: RdfProxy, pred_uri: str, pyobjlist: Iterable) -> None:
         self.__storage: set = set(pyobjlist)
-        self.__subject: str = subj
+        self.__subject: RdfProxy = subj
         self.__pred_uri: str = pred_uri
 
     def __add_in_hfc(self, pyobj):
