@@ -4,15 +4,11 @@
 
 1. Make sure you have an internet connection
 2. Install maven on your computer
-3. go to the `hfc-thrift` directory and enter
+3. go to the `hfc-thrift` directory and execute
 
-   `mvn install`
+   `./compile.sh`
 
-    and
-
-    `mvn install -f apps.xml`
-
-4. If you also want to use the python bridge, you can install the hfc_trift
+4. If you also want to use the python bridge, you can install the `hfc_trift`
    module and all its dependencies like this (make sure the installed pip and
    setuptools is a recent version)
 
