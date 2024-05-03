@@ -1,13 +1,33 @@
 #!/bin/sh
+scriptdir=`dirname $0`
+cd "$scriptdir"
+
 to_dir="src/main"
 thrift_dir="$to_dir/thrift/"
 
+findnewest() {
+    unset -v latest
+    for file in `find "$@" -type f`; do
+        test -z "$latest" -o "$file" -nt "$latest" && latest="$file"
+    done
+    echo "$latest"
+}
+
 for lang in cpp java py; do
-    doit=`find "$to_dir/gen-$lang" \! -cnewer src/main/thrift/\* 2>/dev/null || echo doit`
-    if test -n "$doit"; then
-        #src/main/thrift/hfc_db.thrift do;
+    if test "$lang" = "py"; then
+        target_dir="$to_dir/python/src/hfc_thrift"
+    else
+        target_dir="$to_dir/gen-$lang"
+    fi
+    newestgen=`findnewest "$target_dir"`
+    newestthrift=`findnewest src/main/thrift`
+    if test "$newestthrift" -nt "$newestgen"; then
         for thrift_file in `find $thrift_dir -name \*.thrift`; do
-            thrift -v --gen $lang -o "$to_dir" "$thrift_file"
+            if test "$lang" = "py"; then
+                thrift -v --gen $lang -out "$target_dir" "$thrift_file"
+            else
+                thrift -v --gen $lang -o "$to_dir" "$thrift_file"
+            fi
         done
     fi
 done

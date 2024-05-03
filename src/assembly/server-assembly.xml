@@ -7,12 +7,26 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.outputDirectory}</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>logback.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
   <dependencySets>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <useProjectArtifact>true</useProjectArtifact>
       <unpack>true</unpack>
       <scope>runtime</scope>
+      <unpackOptions>
+        <excludes>
+          <exclude>**/logback.xml</exclude>
+        </excludes>
+      </unpackOptions>
     </dependencySet>
   </dependencySets>
 </assembly>

@@ -12,9 +12,14 @@
 
     `mvn install -f apps.xml`
 
-4. If you also want to use the python bridge, install version 0.19.0 of
-   [Apache Thrift](https://thrift.apache.org/) on your computer. You will need
-   the thrift python libraries installed to use it.
+4. If you also want to use the python bridge, you can install the hfc_trift
+   module and all its dependencies like this (make sure the installed pip and
+   setuptools is a recent version)
+
+```
+cd src/main/python
+pip install .
+```
 
 ## Start server
 

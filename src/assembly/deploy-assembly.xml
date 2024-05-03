@@ -44,6 +44,7 @@
   <fileSets>
     <fileSet>
       <directory>${project.build.outputDirectory}</directory>
+      <!-- TODO: REMOVE client, server and ui DIRECTORIES -->
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

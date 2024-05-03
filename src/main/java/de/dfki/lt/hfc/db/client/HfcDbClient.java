@@ -20,6 +20,10 @@ import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -37,7 +41,6 @@ import de.dfki.lt.hfc.db.server.ClientAdapter;
 import de.dfki.lt.hfc.db.ui.Listener;
 import de.dfki.lt.hfc.db.ui.QueryWindow;
 import de.dfki.lt.hfc.types.XsdAnySimpleType;
-import jline.ConsoleReader;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -525,7 +528,8 @@ public class HfcDbClient {
 
 	  Formatter f = new Formatter(System.out);
 	  if (options.has("c")) {
-	    ConsoleReader r = new ConsoleReader();
+	    Terminal terminal = TerminalBuilder.terminal();
+	    LineReader r = LineReaderBuilder.builder().terminal(terminal).build();
 	    String line = null, query = "";
 	    while ((line = r.readLine()) != null) {
 	      line = line.trim();

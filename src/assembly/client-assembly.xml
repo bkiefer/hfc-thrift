@@ -7,6 +7,15 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.outputDirectory}</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>logback.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
   <dependencySets>
     <dependencySet>
       <useTransitiveFiltering>true</useTransitiveFiltering>
@@ -22,6 +31,11 @@
         <include>jline:jline:*</include>
         <include>org.yaml:snakeyaml:*</include>
       </includes>
+      <unpackOptions>
+        <excludes>
+          <exclude>**/logback.xml</exclude>
+        </excludes>
+      </unpackOptions>
     </dependencySet>
   </dependencySets>
   <fileSets>

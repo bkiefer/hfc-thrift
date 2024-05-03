@@ -22,3 +22,4 @@ nbactions.xml
 **/__pycache__/*
 **/build/
 **/*.egg-info
+src/main/python/src/hfc_thrift/hfc_stream/*
