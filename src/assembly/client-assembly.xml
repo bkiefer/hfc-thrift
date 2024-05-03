@@ -7,15 +7,6 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-  <fileSets>
-    <fileSet>
-      <directory>${project.build.outputDirectory}</directory>
-      <outputDirectory>.</outputDirectory>
-      <includes>
-        <include>logback.xml</include>
-      </includes>
-    </fileSet>
-  </fileSets>
   <dependencySets>
     <dependencySet>
       <useTransitiveFiltering>true</useTransitiveFiltering>
@@ -39,6 +30,13 @@
     </dependencySet>
   </dependencySets>
   <fileSets>
+    <fileSet>
+      <directory>${project.build.outputDirectory}</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>logback.xml</include>
+      </includes>
+    </fileSet>
     <fileSet>
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/</outputDirectory>
