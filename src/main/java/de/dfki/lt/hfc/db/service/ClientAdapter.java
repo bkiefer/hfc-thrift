@@ -1,4 +1,4 @@
-package de.dfki.lt.hfc.db.server;
+package de.dfki.lt.hfc.db.service;
 
 import java.util.Set;
 

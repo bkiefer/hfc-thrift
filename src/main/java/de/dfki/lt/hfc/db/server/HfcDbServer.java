@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
 import de.dfki.lt.hfc.db.remote.QueryResult;
 import de.dfki.lt.hfc.db.rpc.RPCFactory;
+import de.dfki.lt.hfc.db.service.HfcDbServiceHandler;
 
 public class HfcDbServer {
 

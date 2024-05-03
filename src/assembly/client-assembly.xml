@@ -15,11 +15,12 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>de.dfki.lt.hfc:hfc:*</include>
+        <include>de.dfki.lt.hfc:hfc-thrift:*</include>
         <include>org.apache.thrift:libthrift:*</include>
         <include>org.slf4j:slf4j-api:*</include>
         <include>ch.qos.logback:logback-classic:*</include>
         <include>net.sf.jopt-simple:jopt-simple:*</include>
-        <include>jline:jline:*</include>
+        <include>org.jline:jline:*</include>
         <include>org.yaml:snakeyaml:*</include>
       </includes>
       <unpackOptions>
@@ -35,18 +36,8 @@
       <outputDirectory>.</outputDirectory>
       <includes>
         <include>logback.xml</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>${project.build.outputDirectory}</directory>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>de/dfki/lt/hfc/db/server/ClientAdapter.class</include>
         <include>de/dfki/lt/hfc/db/client/*</include>
-        <include>de/dfki/lt/hfc/db/util/*</include>
         <include>de/dfki/lt/hfc/db/ui/*</include>
-        <include>de/dfki/lt/hfc/db/rpc/*</include>
-        <include>de/dfki/lt/hfc/db/remote/*</include>
         <include>de/dfki/lt/hfc/db/*.class</include>
         <include>icons/*</include>
       </includes>

@@ -37,7 +37,7 @@ import de.dfki.lt.hfc.db.rdfProxy.DbClient;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
 import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.rpc.RPCFactory;
-import de.dfki.lt.hfc.db.server.ClientAdapter;
+import de.dfki.lt.hfc.db.service.ClientAdapter;
 import de.dfki.lt.hfc.db.ui.Listener;
 import de.dfki.lt.hfc.db.ui.QueryWindow;
 import de.dfki.lt.hfc.types.XsdAnySimpleType;

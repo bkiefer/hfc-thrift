@@ -8,6 +8,7 @@ import de.dfki.lt.hfc.db.rdfProxy.RdfProxy;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
 import de.dfki.lt.hfc.db.remote.HfcDbService.Client;
 import de.dfki.lt.hfc.db.rpc.RPCFactory;
+import de.dfki.lt.hfc.db.service.ClientAdapter;
 
 public class TestUtils {
 

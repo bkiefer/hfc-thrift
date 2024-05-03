@@ -18,6 +18,7 @@ import de.dfki.lt.hfc.db.QueryResult;
 import de.dfki.lt.hfc.db.Table;
 import de.dfki.lt.hfc.db.TupleException;
 import de.dfki.lt.hfc.db.client.HfcDbClient;
+import de.dfki.lt.hfc.db.service.ClientAdapter;
 
 public class TestClient {
   private static HfcDbServer server;

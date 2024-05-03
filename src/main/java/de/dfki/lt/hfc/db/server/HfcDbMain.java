@@ -8,6 +8,7 @@ import org.apache.thrift.transport.TTransportException;
 import de.dfki.lt.hfc.WrongFormatException;
 import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.remote.QueryResult;
+import de.dfki.lt.hfc.db.service.ClientAdapter;
 import de.dfki.lt.hfc.db.ui.Listener;
 import de.dfki.lt.hfc.db.ui.QueryWindow;
 import java.awt.Color;

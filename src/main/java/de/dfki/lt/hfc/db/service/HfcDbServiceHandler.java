@@ -1,4 +1,4 @@
-package de.dfki.lt.hfc.db.server;
+package de.dfki.lt.hfc.db.service;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
   protected HfcDbHandler _h;
   protected RdfProxy _proxy;
 
-  protected HfcDbServiceHandler(String configPath) {
+  public HfcDbServiceHandler(String configPath) {
     init(configPath);
   }
 

@@ -55,7 +55,11 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.12.1</version>
         <configuration>
-          <excludes>**</excludes>
+          <!--<excludes>
+            <exclude>de/dfki/lt/hfc/db/rpc</exclude>
+            <exclude>de/dfki/lt/hfc/db/service</exclude>
+            <exclude>de/dfki/lt/hfc/db/rpc</exclude>
+          </excludes>-->
           <testExcludes>**</testExcludes>
         </configuration>
       </plugin>
