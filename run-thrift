@@ -15,7 +15,7 @@ findnewest() {
 
 for lang in cpp java py; do
     if test "$lang" = "py"; then
-        target_dir="$to_dir/python/src/hfc_thrift"
+        target_dir="$to_dir/python/src"
     else
         target_dir="$to_dir/gen-$lang"
     fi
