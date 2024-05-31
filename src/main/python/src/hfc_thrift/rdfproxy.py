@@ -53,9 +53,7 @@ class RdfProxy:
             else:
                 # get class of an instance value from HFC
                 class_uri = hfc.getClassOf(uri)
-                proxy = RdfProxy.createProxy(class_uri, uri)
-                RdfProxy.__uri2pyobject[uri] = proxy
-                return proxy
+                return RdfProxy.createProxy(class_uri, uri)
 
     def get_rdf_as_pyobj(self, prop_uri: str) -> Union[int, str, float, 'RdfProxy']:
         """Turn arbitrary xsd value or uri into python object.
@@ -79,15 +77,11 @@ class RdfProxy:
         if isinstance(object, RdfProxy):
             return object.__getattribute__('uri')
         elif isinstance(object, list) or isinstance(object, set):
-            try:
-                it = iter(object)
-                return [RdfProxy.python2rdf(val) for val in it]
-            except TypeError as te:
-                pass
+            it = iter(object)
+            return [RdfProxy.python2rdf(val) for val in it]
         else:
             # now it better be an XSD compatible datatype
             return python2xsd(object)
-        return []
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
@@ -192,7 +186,7 @@ class RdfProxy:
         query_result = hfc.selectQuery(query)
         table = []
         if not query_result.table or not query_result.table.rows or len(query_result.table.rows[0]) == 0:
-            return None
+            return []
         for table_row in query_result.table.rows:
             if len(table_row) > 1:
                 row = []
@@ -219,8 +213,6 @@ class RdfProxy:
     def __setattr__(self, slot, value):
         # should we have an abstract method checking slot/value validity?
         rdfvalue = RdfProxy.python2rdf(value)
-        if not rdfvalue:
-            logger.warning(f'{value} can not be converted to an RDF value')
         rdfslot = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfslot):
             hfc.setValue(self.uri, rdfslot, rdfvalue)
