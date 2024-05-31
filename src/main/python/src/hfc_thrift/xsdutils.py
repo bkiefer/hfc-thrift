@@ -6,7 +6,10 @@ and connection to HFC, and contains some globally valid helper functions
 
 # xsd -> atomic value
 def isXsd(s: str) -> bool:
-    # TODO: check correct prefixes
+    index = s.rfind('^^')
+    if index == -1:
+        return False
+    s = s[index + 2:]
     return s.startswith('<xsd:') or s.startswith('<http://www.w3.org/2001/XMLSchema#')
 
 
