@@ -7,5 +7,13 @@ name = "hfc_thrift"
 version = "0.0.1"
 requires-python = ">=3.10"
 dependencies = [
-  "thrift >= 0.20.0",
+    "thrift >= 0.20.0",
+]
+
+[tool.pyright]
+include = ["src"]
+ignore = ["src/hfc_db"]
+typeCheckingMode = "basic"
+executionEnvironments = [
+    { root = "test", extraPaths = ["src"] }
 ]
