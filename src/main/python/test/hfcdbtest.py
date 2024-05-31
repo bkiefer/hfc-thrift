@@ -2,16 +2,17 @@ import os
 import subprocess
 import sys
 import unittest
+from typing import cast
 
 from hfc_thrift import rdfproxy
 from hfc_thrift import xsdutils
-from hfc_thrift.rdfproxy import RdfProxy, classfactory, logger
+from hfc_thrift.rdfproxy import RdfProxy, RdfSet, classfactory, logger
 
 
 class UtilsTestCase(unittest.TestCase):
     def test_isXsd(self):
-        self.assertTrue(xsdutils.isXsd('<http://www.w3.org/2001/XMLSchema#string>'))
-        self.assertTrue(xsdutils.isXsd('<xsd:string>'))
+        self.assertTrue(xsdutils.isXsd('"hi"^^<http://www.w3.org/2001/XMLSchema#string>'))
+        self.assertTrue(xsdutils.isXsd('"hi"^^<xsd:string>'))
         self.assertFalse(xsdutils.isXsd('no-xsd'))
 
     def test_splitOwlUri(self):
@@ -75,7 +76,9 @@ class RdfProxyTestCase(unittest.TestCase):
                                 '<upper:Entity>': 'UpperEntity',
                                 '<dial:Correction>': 'DialCorrection',
                                 '<tml:Timeline>': 'TmlTimeline',
-                                '<dom:Food>': 'DomFood'})
+                                '<dom:Food>': 'DomFood',
+                                '<tml:Doctor>': 'Doctor'  # trigger warning
+                                })
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -134,20 +137,58 @@ class RdfProxyTestCase(unittest.TestCase):
         self.assertTrue(newchild.isFunctional("<dom:hasIntimacyLevel>"))
         newchild.hasIntimacyLevel = 0.7
 
+    def test_rdf2pyobj(self):
+        self.assertEqual(RdfProxy.rdf2pyobj('"1"^^<xsd:int>'), 1)
+        self.assertEqual(RdfProxy.rdf2pyobj('"1.0"^^<xsd:double>'), 1.0)
+        self.assertEqual(RdfProxy.rdf2pyobj('"ttt"^^<xsd:string>'), 'ttt')
+        child = RdfProxy.getObject("Child")
+        # child is now in cache and can be retrieved via its uri
+        self.assertTrue(RdfProxy._RdfProxy__uri2pyobject[child.uri] is child)  # type: ignore
+        # delete from cache and force refresh
+        del RdfProxy._RdfProxy__uri2pyobject[child.uri]  # type: ignore
+        newchild = RdfProxy.rdf2pyobj(child.uri)  # type: ignore
+        # a new instance is created
+        self.assertFalse(newchild is child)  # type: ignore
+
+    def test_python2rdf(self):
+        self.assertEqual(RdfProxy.python2rdf('hi'), '"hi"^^<xsd:string>')
+        self.assertEqual(RdfProxy.python2rdf(7), '"7"^^<xsd:int>')
+        self.assertEqual(RdfProxy.python2rdf(7.7), '"7.7"^^<xsd:double>')
+        with self.assertRaisesRegex(ValueError, "unsupported type <class 'NoneType'> of None"):
+            RdfProxy.python2rdf(None)
+        with self.assertRaisesRegex(ValueError, "unsupported type <class 'NoneType'> of None"):
+            RdfProxy.python2rdf([None])
+        newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_23>")
+        self.assertEqual(RdfProxy.python2rdf(newchild), "<dom:child_23>")
+        self.assertEqual(RdfProxy.python2rdf([newchild]), ["<dom:child_23>"])
+        self.assertEqual(RdfProxy.python2rdf([[newchild]]), [["<dom:child_23>"]])
+
     def test_relationalprop(self):
         newchild = RdfProxy.createProxy("<dom:Child>", "<dom:child_23>")
+        self.assertEqual(RdfProxy.python2rdf(newchild), "<dom:child_23>")
+        with self.assertRaisesRegex(ValueError, "unsupported type <class 'NoneType'> of None"):
+            newchild.age = None
+        newchild.age = 7
+        self.assertEqual(newchild.age, 7)
         bro1 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_23>")
         bro2 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_24>")
-        newchild.hasBrother = [bro1, bro2]
-        self.assertEqual(2, len(newchild.hasBrother))
+        # TODO: This causes an erorr in line 179, as the value returned from HFC is <owl:Nothing>
+        # newchild.hasBrother = []
+        # no brothers assigned yet
+        self.assertEqual(len(cast(RdfSet, newchild.hasBrother)), 0)
         bros = RdfProxy.selectQuery(f"select ?b where {newchild.uri} <dom:hasBrother> ?b ?_")
-        self.assertEqual(2, len(bros))
+        self.assertEqual(0, len(cast(RdfSet, bros)))
+        # assign brothers:
+        newchild.hasBrother = [bro1, bro2]
+        self.assertEqual(2, len(cast(RdfSet, newchild.hasBrother)))
+        bros = RdfProxy.selectQuery(f"select ?b where {newchild.uri} <dom:hasBrother> ?b ?_")
+        self.assertEqual(2, len(cast(RdfSet, bros)))
         self.assertTrue(bro1 in bros and bro2 in bros)
         bro3 = RdfProxy.getObject("Brother")
-        newchild.hasBrother.add(bro3)
-        self.assertEqual(3, len(newchild.hasBrother))
-        newchild.hasBrother.remove(bro1)
-        self.assertEqual(2, len(newchild.hasBrother))
+        cast(RdfSet, newchild.hasBrother).add(bro3)
+        self.assertEqual(3, len(cast(RdfSet, newchild.hasBrother)))
+        cast(RdfSet, newchild.hasBrother).discard(bro1)
+        self.assertEqual(2, len(cast(RdfSet, newchild.hasBrother)))
         self.assertTrue(bro2 in newchild.hasBrother and bro3 in newchild.hasBrother)
 
 
