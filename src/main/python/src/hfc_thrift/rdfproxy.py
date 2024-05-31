@@ -64,7 +64,7 @@ class RdfProxy:
         value = hfc.getValue(self.uri, prop_uri)
         return RdfProxy.rdf2pyobj(value)
 
-    def get_rdf_as_rdfset(self, prop_uri: str):
+    def get_rdf_as_rdfset(self, prop_uri: str) -> 'RdfSet':
         """Turn arbitrary xsd value or uri into python object.
            If value is an uri, this may result in a recursive call
            (currently not)"""
@@ -74,7 +74,7 @@ class RdfProxy:
         return result
 
     @staticmethod
-    def python2rdf(object) -> str | list[Any]:
+    def python2rdf(object: Any) -> str | list[Any]:
         """Return a rdf representation of this object (a string)"""
         if isinstance(object, RdfProxy):
             return object.__getattribute__('uri')
@@ -188,7 +188,7 @@ class RdfProxy:
         return table
 
     @classmethod
-    def query(cls, query: str):
+    def query(cls, query: str) -> list[Any]:
         query_result = hfc.selectQuery(query)
         table = []
         if not query_result.table or not query_result.table.rows or len(query_result.table.rows[0]) == 0:
