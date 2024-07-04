@@ -42,6 +42,8 @@ def xsd2python(xsdstring: str) -> int | str | float:
         return value
     elif name == "double":
         return float(value)
+    elif name == "boolean":
+        return bool(value)
     raise ValueError(f'unsupported type {name}')
 
 
@@ -49,6 +51,7 @@ xsdclassdict = {
     int: "int",
     str: "string",
     float: "double",
+    bool: "boolean"
     # datetime: "date"
 }
 
