@@ -4,8 +4,7 @@ import sys
 import unittest
 from typing import cast
 
-from hfc_thrift import rdfproxy
-from hfc_thrift import xsdutils
+from hfc_thrift import xsdutils, rdfproxy
 from hfc_thrift.rdfproxy import RdfProxy, RdfSet, classfactory, logger
 
 

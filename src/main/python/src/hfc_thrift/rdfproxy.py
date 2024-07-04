@@ -1,5 +1,5 @@
 import logging
-from typing import Iterable, Union, Type, cast, Any
+from typing import ClassVar, Iterable, Union, Type, cast, Any
 
 from hfc_thrift.hfcclient import connect, HfcClient
 from hfc_thrift.xsdutils import isXsd, xsd2python, python2xsd, splitOwlUri
@@ -17,22 +17,22 @@ hfc: HfcClient
 
 
 class RdfProxy:
-    FUNCTIONAL_MASK: int = 4
+    FUNCTIONAL_MASK: ClassVar[int] = 4
 
     # namespace to create new instances in
-    namespace: str
+    namespace: ClassVar[str]
 
     """to resolve name clashes because of namespaces in RDF, and to get the RDF
     class name from the python class name"""
 
     # for classes (and properties?):
     # python object <-> HFC Uris
-    __rdf2py: dict[str, str] = dict()
-    __py2rdf: dict[str, str] = dict()
+    __rdf2py: ClassVar[dict[str, str]] = dict()
+    __py2rdf: ClassVar[dict[str, str]] = dict()
 
     """All created RDF classes and objects in the python memory"""
-    __uri2pyclass: dict[str, type['RdfProxy']] = dict()
-    __uri2pyobject: dict[str, 'RdfProxy'] = dict()
+    __uri2pyclass: ClassVar[dict[str, type['RdfProxy']]] = dict()
+    __uri2pyobject: ClassVar[dict[str, 'RdfProxy']] = dict()
 
     @classmethod
     def getObject(cls, classname: str) -> 'RdfProxy':
