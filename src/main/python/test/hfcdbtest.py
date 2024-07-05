@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import time
 import unittest
 from typing import cast
 
@@ -51,41 +52,52 @@ class RdfProxyTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        port = 7979
         if sys.platform.startswith('linux'):
             # Linux specific procedures
 
-            os.chdir("../../..")
+            os.chdir("../../../..")
+            print(os.getcwd())
             # start hfc server process
             cls.proc = subprocess.Popen(["/usr/bin/java",
                                          "-Dlogback.configurationFile=./logback.xml",
                                          "-jar", "target/hfc-server.jar",
-                                         "-p", "7777", "src/test/data/test.yml"],
+                                         "-p", str(port), "src/test/data/test.yml"],
                                         encoding="UTF-8",
                                         stdout=subprocess.PIPE)
             for line in (cls.proc.stdout or []):
-                if "Starting" in line:
-                    logger.info("HFC Server started successfully")
+                if "Welcome" in line:
+                    logger.info(f"HFC Server started successfully on port {port}")
+                    time.sleep(0.5)
                     break
-        else:
-            logger.warning('Make sure HFC server is running on port 7777 using test.yml configuration')
 
-        # don't use default port: PAL hfc service uses it.
-        RdfProxy.init_rdfproxy('localhost', 7777,
-                               {'<tml:Event>': 'TmlEvent',
-                                '<upper:Entity>': 'UpperEntity',
-                                '<dial:Correction>': 'DialCorrection',
-                                '<tml:Timeline>': 'TmlTimeline',
-                                '<dom:Food>': 'DomFood',
-                                '<tml:Doctor>': 'Doctor'  # trigger warning
-                                })
+        else:
+            logger.warning('Make sure HFC server is running on port 7799 using test.yml configuration')
+
+        try:
+            # don't use default port: PAL hfc service uses it.
+            RdfProxy.init_rdfproxy('localhost', port,
+                                   {'<tml:Event>': 'TmlEvent',
+                                    '<upper:Entity>': 'UpperEntity',
+                                    '<dial:Correction>': 'DialCorrection',
+                                    '<tml:Timeline>': 'TmlTimeline',
+                                    '<dom:Food>': 'DomFood',
+                                    '<tml:Doctor>': 'Doctor'  # trigger warning
+                                    })
+        except Exception as ex:
+            logger.error(f"Could not initialize rdfproxy: {ex}")
+            if sys.platform.startswith('linux'):
+                # stop hfc server process
+                cls.proc.terminate()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        RdfProxy.shutdown_rdfproxy()
-
-        if sys.platform.startswith('linux'):
-            # stop hfc server process
-            cls.proc.terminate()
+        try:
+            RdfProxy.shutdown_rdfproxy()
+        finally:
+            if sys.platform.startswith('linux'):
+                # stop hfc server process
+                cls.proc.terminate()
 
     def setUp(self):
         if not sys.platform.startswith('linux'):

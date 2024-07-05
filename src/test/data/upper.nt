@@ -2,13 +2,6 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#Ability> <http://www.w3.org/2000/01/rdf-schema#comment> "ability is a container to group capabilities of animated objects (= agents), e.g., able to lift 100kg or is allowed to drive a truck, and should NOT refer to individual physical properties (e.g., size = 1.82m or weight = 75kg)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Ability> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/2000/01/rdf-schema#comment> ""^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Entity> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> <http://www.w3.org/2002/07/owl#disjointWith> <http://www.dfki.de/lt/onto/common/upper.owl#Happening> .
@@ -16,8 +9,6 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#Action> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Action> <http://www.w3.org/2000/01/rdf-schema#comment> "actions manifest in real-world happenings"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Action> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/2000/01/rdf-schema#comment> "Agent makes a fundamental distinction between Singles and Groups of Agents"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Agent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Physical> .
@@ -47,8 +38,6 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#endsWith> <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.dfki.de/lt/onto/common/upper.owl#Event> .
 <http://www.dfki.de/lt/onto/common/upper.owl#endsWith> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.dfki.de/lt/onto/common/upper.owl#Happening> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Entity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Entity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Entity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Entity> <http://www.w3.org/2000/01/rdf-schema#comment> "a tri-partite structure: Abstract, Happening, and Physical"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Event> <http://www.w3.org/2000/01/rdf-schema#comment> "Events allow us to encode simple processes through the distinguished properties startsWith, continuesWith, and endsWith; _loops_ can be implemented by mentioning a Happening at a later point again and _choices_ by having several Happenings at the same time, as the three distinguished properties ar _relational_"^^<http://www.w3.org/2001/XMLSchema#string> .
@@ -57,7 +46,6 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#Group> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Group> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Agent> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Group> <http://www.w3.org/2002/07/owl#disjointWith> <http://www.dfki.de/lt/onto/common/upper.owl#Single> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Happening> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Happening> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Happening> <http://www.w3.org/2000/01/rdf-schema#comment> "Happenings are either atomic Situations or decomposable Events"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Happening> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Entity> .
@@ -137,10 +125,6 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#Object> <http://www.w3.org/2000/01/rdf-schema#comment> ""^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Object> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Physical> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/2000/01/rdf-schema#comment> "we destinguish between conscious, self-aware agaent (singles and groups), places in the real world, and everything else (Object)"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Entity> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Physical> <http://www.w3.org/2002/07/owl#disjointWith> <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> .
@@ -152,10 +136,8 @@
 <http://www.dfki.de/lt/onto/common/upper.owl#Plan> <http://www.w3.org/2000/01/rdf-schema#comment> "a placeholder for an abstract plan"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Plan> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Abstract> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Single> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Single> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Single> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Agent> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Single> <http://www.w3.org/2002/07/owl#disjointWith> <http://www.dfki.de/lt/onto/common/upper.owl#Group> .
-<http://www.dfki.de/lt/onto/common/upper.owl#Situation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Situation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Situation> <http://www.w3.org/2000/01/rdf-schema#comment> "Situations are atomic, i.e., can not be depomposed any further"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://www.dfki.de/lt/onto/common/upper.owl#Situation> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/common/upper.owl#Happening> .

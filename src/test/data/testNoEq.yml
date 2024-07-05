@@ -14,22 +14,13 @@ addTimestamps: [ 0 ]
 
 namespaces:
   # namespaces for XSD, RDF, RDFS, and OWL are already defined
-  pal: http://www.dfki.de/lt/onto/pal/pal.owl#
   time: http://www.dfki.de/lt/onto/common/time.owl#
   upper: http://www.dfki.de/lt/onto/common/upper.owl#
   dial: http://www.dfki.de/lt/onto/common/dialogue.owl#
   dom: http://www.dfki.de/lt/onto/pal/domain.owl#
   sem: http://www.dfki.de/lt/onto/pal/semantics.owl#
-  edu: http://www.dfki.de/lt/onto/pal/dmedu.owl#
-  task: http://www.dfki.de/lt/onto/pal/task.owl#
-  bloom: http://www.dfki.de/lt/onto/pal/bloom.owl#
   rifca: http://www.dfki.de/lt/onto/pal/rifca.owl#
   tml: http://www.dfki.de/lt/onto/pal/timeline.owl#
-  epmem: http://www.dfki.de/lt/onto/pal/episodicmemory.owl#
-  pins: http://www.pal4u.eu/ontology/pins.owl#
-  smalltalk: http://www.dfki.de/lt/onto/pal/smalltalk.owl#
-  stassert: http://www.dfki.de/lt/onto/pal/stassertions.owl#
-  xai: http://www.pal4u.eu/ontology/xai.owl#
 
 tupleFiles:
   # the axiomatic triples for OWL-Horst w/ EQ reduction

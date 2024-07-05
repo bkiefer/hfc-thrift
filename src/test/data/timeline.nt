@@ -179,14 +179,3 @@ _:genid9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid10 .
 <http://www.dfki.de/lt/onto/pal/timeline.owl#typeofMeal> <http://www.w3.org/2000/01/rdf-schema#range> _:genid20 .
 <http://www.dfki.de/lt/onto/pal/timeline.owl#UnlockShopObject> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://www.dfki.de/lt/onto/pal/timeline.owl#UnlockShopObject> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.dfki.de/lt/onto/pal/timeline.owl#Timeline> .
-<http://www.w3.org/2001/XMLSchema#cal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#cm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#date> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#gm> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#iu> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#kg> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#kg_m2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#mg_dL> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#min-1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#mmHg> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
-<http://www.w3.org/2001/XMLSchema#mmol_L> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Datatype> .
