@@ -23,3 +23,4 @@ nbactions.xml
 **/build/
 **/*.egg-info
 src/main/python/src/hfc_thrift/hfc_stream/*
+src/main/python/dist
