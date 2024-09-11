@@ -164,6 +164,8 @@ class RdfProxyTestCase(unittest.TestCase):
     def test_python2rdf(self):
         self.assertEqual(RdfProxy.python2rdf('hi'), '"hi"^^<xsd:string>')
         self.assertEqual(RdfProxy.python2rdf(7), '"7"^^<xsd:int>')
+        now = round(time.time() * 1000)
+        self.assertEqual(RdfProxy.python2rdf(now), '"{}"^^<xsd:long>'.format(now))
         self.assertEqual(RdfProxy.python2rdf(7.7), '"7.7"^^<xsd:double>')
         with self.assertRaisesRegex(ValueError, "unsupported type <class 'NoneType'> of None"):
             RdfProxy.python2rdf(None)

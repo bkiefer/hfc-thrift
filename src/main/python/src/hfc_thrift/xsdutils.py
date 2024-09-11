@@ -55,8 +55,14 @@ xsdclassdict = {
     # datetime: "date"
 }
 
+INT_MAX_VALUE = 2147483647
+INT_MIN_VALUE = -2147483648
 
 def python2xsd(py_val) -> str:
     if type(py_val) in xsdclassdict:
-        return f'"{str(py_val)}"^^<xsd:{xsdclassdict[type(py_val)]}>'
+        xsdtype = xsdclassdict[type(py_val)]
+        if xsdtype == "int" and \
+            (py_val > INT_MAX_VALUE or py_val < INT_MIN_VALUE):
+            xsdtype = "long"
+        return f'"{str(py_val)}"^^<xsd:{xsdtype}>'
     raise ValueError(f'unsupported type {type(py_val)} of {py_val}')
