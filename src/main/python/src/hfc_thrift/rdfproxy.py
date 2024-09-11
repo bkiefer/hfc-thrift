@@ -13,7 +13,7 @@ logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 
 """HFC client connector"""
-hfc: HfcClient
+hfc: HfcClient = None
 
 
 class RdfProxy:
@@ -105,13 +105,15 @@ class RdfProxy:
     def init_rdfproxy(cls, host: str = 'localhost', port: int = 9090, classmapping: dict[str, str] = dict(),
                       ns: str = 'dom:') -> None:
         global hfc
-
-        hfc = connect(host, port)
-        cls.namespace = ns
-        cls.preload_classes(classmapping)
+        # if hfc is set, no initialisation is needed
+        if not hfc:
+            hfc = connect(host, port)
+            cls.namespace = ns
+            cls.preload_classes(classmapping)
 
     @classmethod
     def shutdown_rdfproxy(cls) -> None:
+        global hfc
         hfc.disconnect()
 
     @classmethod
@@ -213,6 +215,9 @@ class RdfProxy:
     def __setattr__(self, slot, value):
         # should we have an abstract method checking slot/value validity?
         rdfvalue = RdfProxy.python2rdf(value)
+        if slot not in self.__propertyBaseToFull:
+            raise KeyError("property {} not defined for OWL class {}"
+                           .format(slot, __rdf2py(str(self.__class__))))
         rdfslot = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfslot):
             hfc.setValue(self.uri, rdfslot, rdfvalue)
@@ -249,6 +254,14 @@ class RdfSet():
     def discard(self, pyobj):
         if pyobj in self.__storage:
             self.remove(pyobj)
+
+    def union(self, other: Iterable):
+        for i in other:
+            self.add(i)
+
+    def intersection(self, other: Iterable):
+        for i in other:
+            self.remove(i)
 
     def __len__(self):
         return len(self.__storage)
