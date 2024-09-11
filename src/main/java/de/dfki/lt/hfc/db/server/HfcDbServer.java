@@ -43,8 +43,8 @@ public class HfcDbServer {
     Runnable simple = new Runnable() {
       @Override
       public void run() {
-        _server.serve();
         logger.info("Starting the simple server on port {} ...", port);
+        _server.serve();
       }
     };
     _serverThread = new Thread(simple);
