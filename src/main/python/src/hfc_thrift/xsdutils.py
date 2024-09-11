@@ -36,7 +36,7 @@ def extractTypeAndValue(xsdstring: str) -> tuple[str, str]:
 def xsd2python(xsdstring: str) -> int | str | float:
     # TODO: check which python type corresponds to the value and convert
     name, value = extractTypeAndValue(xsdstring)
-    if name == "int":
+    if name == "int" or name == "long":
         return int(value)
     elif name == "string":
         return value

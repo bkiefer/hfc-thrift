@@ -32,6 +32,10 @@ class HfcClient(HfcDbService.Client):
     def disconnect(self) -> None:
         self.transport.close()
 
+    def shutdown(self):
+        super().shutdown()
+        #self.transport.close()
+
 
 def connect(host: str = 'localhost', port: int = 9090) -> HfcClient:
     """

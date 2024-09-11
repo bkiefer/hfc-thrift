@@ -1,6 +1,8 @@
 import logging
 from typing import ClassVar, Iterable, Union, Type, cast, Any
 
+from thrift.transport.TTransport import TTransportException
+
 from hfc_thrift.hfcclient import connect, HfcClient
 from hfc_thrift.xsdutils import isXsd, xsd2python, python2xsd, splitOwlUri
 
@@ -115,6 +117,16 @@ class RdfProxy:
     def shutdown_rdfproxy(cls) -> None:
         global hfc
         hfc.disconnect()
+
+    @classmethod
+    def shutdown_server(cls) -> None:
+        global hfc
+        try:
+            hfc.shutdown()
+        except TTransportException as tex:
+            # ignore, the transport gets closed during shutdown
+            pass
+
 
     @classmethod
     def preload_propertyInfo(cls, class_uri: str) -> None:

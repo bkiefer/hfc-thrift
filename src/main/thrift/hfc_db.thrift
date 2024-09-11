@@ -38,6 +38,9 @@ service HfcDbService {
   // reset service
   void init(1: string config_path),
 
+  // shutdown
+  void shutdown(),
+
   // promote a namespace mapping to the server for further uploading of tuples
   bool addNamespace(1: string shortForm, 2: string longForm),
 

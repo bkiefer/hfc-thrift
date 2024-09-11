@@ -30,6 +30,11 @@ class HfcDbServiceHandler : virtual public HfcDbServiceIf {
     printf("init\n");
   }
 
+  void shutdown() {
+    // Your implementation goes here
+    printf("shutdown\n");
+  }
+
   bool addNamespace(const std::string& shortForm, const std::string& longForm) {
     // Your implementation goes here
     printf("addNamespace\n");

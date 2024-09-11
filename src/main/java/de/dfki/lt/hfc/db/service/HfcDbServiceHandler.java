@@ -190,4 +190,9 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
   public String getClassOf(String uri) {
     return _proxy.getMostSpecificClass(uri).toString();
   }
+
+  @Override
+  public void shutdown() throws TException {
+    _h.shutdown();
+  }
 }

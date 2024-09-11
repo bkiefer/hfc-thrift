@@ -66,7 +66,7 @@ class RdfProxyTestCase(unittest.TestCase):
                                         encoding="UTF-8",
                                         stdout=subprocess.PIPE)
             for line in (cls.proc.stdout or []):
-                if "Welcome" in line:
+                if "Starting" in line:
                     logger.info(f"HFC Server started successfully on port {port}")
                     time.sleep(0.5)
                     break
@@ -87,17 +87,17 @@ class RdfProxyTestCase(unittest.TestCase):
         except Exception as ex:
             logger.error(f"Could not initialize rdfproxy: {ex}")
             if sys.platform.startswith('linux'):
-                # stop hfc server process
+                # stop hfc server process, if running
                 cls.proc.terminate()
 
     @classmethod
     def tearDownClass(cls) -> None:
         try:
-            RdfProxy.shutdown_rdfproxy()
+            RdfProxy.shutdown_server()
         finally:
             if sys.platform.startswith('linux'):
-                # stop hfc server process
-                cls.proc.terminate()
+                # wait for hfc server process to end
+                cls.proc.wait()
 
     def setUp(self):
         if not sys.platform.startswith('linux'):
