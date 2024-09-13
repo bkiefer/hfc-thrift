@@ -15,7 +15,7 @@ logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 
 """HFC client connector"""
-hfc: HfcClient = None
+hfc: HfcClient = None  # type: ignore
 
 
 class RdfProxy:
@@ -228,8 +228,7 @@ class RdfProxy:
         # should we have an abstract method checking slot/value validity?
         rdfvalue = RdfProxy.python2rdf(value)
         if slot not in self.__propertyBaseToFull:
-            raise KeyError("property {} not defined for OWL class {}"
-                           .format(slot, __rdf2py(str(self.__class__))))
+            raise KeyError(f'property {slot} not defined for OWL class {self.__py2rdf[self.__class__.__name__]}')
         rdfslot = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfslot):
             hfc.setValue(self.uri, rdfslot, rdfvalue)

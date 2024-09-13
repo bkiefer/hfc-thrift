@@ -72,7 +72,7 @@ class RdfProxyTestCase(unittest.TestCase):
                     break
 
         else:
-            logger.warning('Make sure HFC server is running on port 7799 using test.yml configuration')
+            logger.warning('Make sure HFC server is running on port 7979 using test.yml configuration')
 
         try:
             # don't use default port: PAL hfc service uses it.
@@ -92,10 +92,10 @@ class RdfProxyTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        try:
-            RdfProxy.shutdown_server()
-        finally:
-            if sys.platform.startswith('linux'):
+        if sys.platform.startswith('linux'):
+            try:
+                RdfProxy.shutdown_server()
+            finally:
                 # wait for hfc server process to end
                 cls.proc.wait()
 
