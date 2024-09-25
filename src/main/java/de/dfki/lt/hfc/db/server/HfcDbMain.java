@@ -6,12 +6,7 @@ import java.util.List;
 import org.apache.thrift.transport.TTransportException;
 
 import de.dfki.lt.hfc.WrongFormatException;
-import de.dfki.lt.hfc.db.remote.QueryException;
-import de.dfki.lt.hfc.db.remote.QueryResult;
-import de.dfki.lt.hfc.db.service.ClientAdapter;
-import de.dfki.lt.hfc.db.ui.Listener;
 import de.dfki.lt.hfc.db.ui.QueryWindow;
-import java.awt.Color;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -20,33 +15,6 @@ import joptsimple.OptionSet;
 public class HfcDbMain {
   protected static final int SERVER_PORT = 9090;
   protected static final int WEBSERVER_PORT = 9999;
-
-  protected static void interactive (final HfcDbServer server) {
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final QueryWindow qw = new QueryWindow();
-        qw.register(new Listener<String>() {
-          @Override
-          public void listen(String query) {
-            try {
-              QueryResult qr = server.selectQuery(query);
-              qw.setContent(ClientAdapter.get(qr), query);
-              qw._statusbar.setText(qr.table.getRowsSize()
-                  + " results have been found.");
-              qw._statusbar.setForeground(new Color(8, 135, 81));
-            } catch (QueryException ex) {
-              qw._statusbar.setText(ex.getWhy());
-              qw._statusbar.setForeground(new Color(222, 41, 38));
-            } catch (Exception ex) {
-              ex.printStackTrace();
-            }
-          }
-        });
-      }
-    });
-  }
-
 
   private static void usage(String msg) {
     String[] usage = {
@@ -62,7 +30,7 @@ public class HfcDbMain {
 
   public static void main(String[] args)
       throws TTransportException, IOException, WrongFormatException {
-    OptionParser parser = new OptionParser("p:w:iW:");
+    OptionParser parser = new OptionParser("p:w:iW:f:");
     OptionSet options = null;
     try {
       options = parser.parse(args);
@@ -103,7 +71,11 @@ public class HfcDbMain {
 
     // server.runHttpService(webserviceport);
 
-    if (options.has("i")) interactive(server);
+    
+    if (options.has("f")) 
+      QueryWindow.DEFAULT_FONT_SIZE = Integer.parseInt((String)options.valueOf("f"));
+
+    if (options.has("i")) QueryWindow.interactive(server);
 
     if (options.has("W")) {
       server.getHandler().dump((String)options.valueOf("W"));

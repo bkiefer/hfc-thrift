@@ -1,6 +1,5 @@
 package de.dfki.lt.hfc.db.client;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,15 +37,15 @@ import de.dfki.lt.hfc.db.remote.HfcDbService;
 import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.rpc.RPCFactory;
 import de.dfki.lt.hfc.db.service.ClientAdapter;
-import de.dfki.lt.hfc.db.ui.Listener;
 import de.dfki.lt.hfc.db.ui.QueryWindow;
+import de.dfki.lt.hfc.db.ui.Queryable;
 import de.dfki.lt.hfc.types.XsdAnySimpleType;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 /** An example client, to demonstrate how to create your own client */
-public class HfcDbClient {
+public class HfcDbClient implements Queryable {
 
   private static final int SERVER_PORT = 9090;
 
@@ -465,32 +464,6 @@ public class HfcDbClient {
   }
 
 
-  private static void interactive (final HfcDbClient client) {
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final QueryWindow qw = new QueryWindow();
-        qw.register(new Listener<String>() {
-          @Override
-          public void listen(String query) {
-            try {
-              // put input in history
-              qw.addToHistory(query);
-              QueryResult qr = client.query(query);
-              qw.setContent(qr, query);
-              qw._statusbar.setText(qr.table.getRowsSize() + " results have been found.");
-              qw._statusbar.setForeground(new Color(8, 135, 81));
-            } catch (QueryException ex) {
-              qw._statusbar.setText(ex.getWhy());
-              qw._statusbar.setForeground(new Color(222, 41, 38));
-            } catch (Exception ex) {
-              ex.printStackTrace();
-            }
-          }
-        });
-      }
-    });
-  }
 
   static String line = "\"<p style=\\\"margin-top: 0\\\">\n      this subclass of DialogueAct is intended to cross-classify dialogue acts \n      which are subclasses of GeneralPurposeFunction; the idea behind this is \n      to address uncertainty in the recognition of &quot;related&quot; dialogue acts \n      through a _single_ class;\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      currently, we suggest to have three subclasses of AggregateFunction for \n      which I list their subclasses below:\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Accept &gt; \n      {AcceptOffer,AcceptSuggestion,AcceptRequest,Confirm,CheckPositive,Agreement}\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Decline &gt; \n      {DeclineOffer,DeclineSuggestion,DeclineRequest,Disconfirm,CheckNegative,Disagreement}\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Revoke &gt; {Revocation,Correction,RevokeSuggestion}\n    </p>\"^^<http://www.w3.org/2001/XMLSchema#string>";
   static String line0 = "<http://www.dfki.de/lt/onto/common/dialogue.owl#AggregateFunction> <http://www.w3.org/2000/01/rdf-schema#comment> \"<p style=\\\"margin-top: 0\\\">\n      this subclass of DialogueAct is intended to cross-classify dialogue acts \n      which are subclasses of GeneralPurposeFunction; the idea behind this is \n      to address uncertainty in the recognition of &quot;related&quot; dialogue acts \n      through a _single_ class;\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      currently, we suggest to have three subclasses of AggregateFunction for \n      which I list their subclasses below:\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Accept &gt; \n      {AcceptOffer,AcceptSuggestion,AcceptRequest,Confirm,CheckPositive,Agreement}\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Decline &gt; \n      {DeclineOffer,DeclineSuggestion,DeclineRequest,Disconfirm,CheckNegative,Disagreement}\n    </p>\n    <p style=\\\"margin-top: 0\\\">\n      * Revoke &gt; {Revocation,Correction,RevokeSuggestion}\n    </p>\"^^<http://www.w3.org/2001/XMLSchema#string>";
@@ -498,7 +471,7 @@ public class HfcDbClient {
   @SuppressWarnings("unchecked")
   public static void main(String[] args)
 	    throws IOException, WrongFormatException, TException {
-    OptionParser parser = new OptionParser("h:p:itcs");
+    OptionParser parser = new OptionParser("h:p:itcsf:");
     OptionSet options = null;
     String host = "localhost";
     int port = SERVER_PORT;
@@ -546,7 +519,9 @@ public class HfcDbClient {
 	      }
 	    }
 	  } else if (options.has("i")) {
-	    interactive(client);
+	    if (options.has("f")) 
+	      QueryWindow.DEFAULT_FONT_SIZE = Integer.parseInt((String)options.valueOf("f"));
+	    QueryWindow.interactive(client);
     } else if (options.has("t")) {
       List<String> l = client.getChildren();
       for (String s : l) {

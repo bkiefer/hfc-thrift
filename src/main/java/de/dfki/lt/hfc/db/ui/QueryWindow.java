@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.AbstractTableModel;
 
+import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.QueryResult;
 
 import java.io.IOException;
@@ -19,6 +20,8 @@ public class QueryWindow extends JFrame {
 
   private static String DEFAULT_QUERY = "select ?s ?o where ?s <rdf:type> ?o ?_";
 
+  public static int DEFAULT_FONT_SIZE = 18;
+  
   public JTable table;
 
   public JTextField queryInput;
@@ -66,7 +69,49 @@ public class QueryWindow extends JFrame {
       this.fireTableStructureChanged();
     }
   };
-
+  
+  private void showMsg(String msg) {
+    _statusbar.setText(msg);
+    _statusbar.setForeground(new Color(8, 135, 81));
+  }
+  
+  private void showError(String msg) {
+    _statusbar.setText(msg);
+    _statusbar.setForeground(new Color(222, 41, 38));
+  }
+    
+  public static void interactive (final Queryable client) {
+    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        final QueryWindow qw = new QueryWindow();
+        qw.register(new Listener<String>() {
+          @Override
+          public void listen(String query) {
+            try {
+              // put input in history
+              QueryResult qr = client.query(query);
+              qw.addToHistory(query);
+              qw.setContent(qr, query);
+              qw.showMsg(qr.table.getRowsSize() + " results have been found.");
+            } catch (QueryException ex) {
+              qw.showError(ex.getWhy());
+            } catch (de.dfki.lt.hfc.db.QueryException ex) {
+              qw.showError(ex.getWhy());
+            } catch (RuntimeException rex) {
+              if (rex.getCause() instanceof QueryException) {
+                qw.showError(((QueryException)rex.getCause()).getWhy());
+              } else {
+                rex.printStackTrace();
+              }
+            } catch (Exception ex) {
+              ex.printStackTrace();
+            }
+          }
+        });
+      }
+    });
+  }
   public void setContent(final QueryResult res, String query) throws IOException {
     if (res == null) return;
     AbstractTableModel atm = new QueryResultModel(res);
@@ -144,7 +189,7 @@ public class QueryWindow extends JFrame {
     this.setLocationByPlatform(true);
     // set preferred size
     this.setPreferredSize(new Dimension(800, 300));
-    setDefaultFont(18);
+    setDefaultFont(DEFAULT_FONT_SIZE);
 
     final QueryWindow mainFrame = this;
 

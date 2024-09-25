@@ -14,26 +14,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.LinkedList;
+import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 /**
  *
  * @author Christophe Biwer, christophe.biwer@dfki.de
  */
+@SuppressWarnings("serial")
 public class RecentDialog extends JPanel {
+  private static final Logger logger = 
+      LoggerFactory.getLogger(RecentDialog.class);
 
   public static int MAX_HISTORY_LENGTH = 40;
+  private static File historyFile;
 
   private Boolean _visible;
   private final JTable _table;
@@ -44,27 +56,36 @@ public class RecentDialog extends JPanel {
   public static Yaml yaml = new Yaml();
 
   public LinkedList<String> history;
-
+  
+  @SuppressWarnings("unchecked")
   public RecentDialog(Frame owner, Listener<String> listener,
       ActionListener exe) {
     _listener = listener;
     _owner = owner;
-    _exe = exe;
+    _exe = exe;    
+    
+    String homepath = System.getProperty("user.home");
+    historyFile = new File(homepath + "/.config/hfc/hfc-history.yml");
+    
     this.setPreferredSize(new Dimension(300, 120));
 
-    String homepath = System.getProperty("user.home");
-    File file = new File(homepath + "/.hfc-history.yml");
-    if (file.exists()) {
-      try {
-        ArrayList<String> temp = (ArrayList<String>)
-            yaml.load(new FileInputStream(file));
-        history = new LinkedList<>(temp);
+    if (historyFile.exists()) {
+      try (InputStream is = new FileInputStream(historyFile)) {
+        history = new LinkedList<String>((List<String>)yaml.load(is));
       } catch (FileNotFoundException e) {
         // impossible to occur.
+      } catch (IOException e1) {
+        logger.error("Can not load history file: {}", e1.getMessage());
+        history = new LinkedList<>();
       }
     } else {
-      System.out.println("No history found, creating a new one.");
-      history = new LinkedList<>();
+      try {
+        logger.info("No history found, creating a new one.");
+        history = new LinkedList<>();
+        Files.createDirectories(historyFile.toPath().getParent());
+      } catch (IOException e) {
+        logger.error("Can not create directory to store history: {}", historyFile);
+      }
     }
 
     this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -108,9 +129,7 @@ public class RecentDialog extends JPanel {
       history.removeLast();
     }
     ((AbstractTableModel) _table.getModel()).fireTableStructureChanged();
-    try {
-      String homepath = System.getProperty("user.home");
-      FileWriter writer = new FileWriter((homepath + "/.hfc-history.yml"), false);
+    try (FileWriter writer = new FileWriter(historyFile, false)) {
       yaml.dump(history, writer);
     } catch (IOException ex) {
       throw new RuntimeException(ex);

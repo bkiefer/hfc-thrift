@@ -5,12 +5,14 @@ import org.apache.thrift.server.TServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.dfki.lt.hfc.db.QueryResult;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
-import de.dfki.lt.hfc.db.remote.QueryResult;
 import de.dfki.lt.hfc.db.rpc.RPCFactory;
+import de.dfki.lt.hfc.db.service.ClientAdapter;
 import de.dfki.lt.hfc.db.service.HfcDbServiceHandler;
+import de.dfki.lt.hfc.db.ui.Queryable;
 
-public class HfcDbServer {
+public class HfcDbServer implements Queryable {
 
   private static final Logger logger = LoggerFactory.getLogger(HfcDbServer.class);
 
@@ -30,8 +32,8 @@ public class HfcDbServer {
     return _handler;
   }
 
-  public QueryResult selectQuery(String query) throws TException {
-    return _handler.selectQuery(query);
+  public QueryResult query(String query) throws TException {
+    return ClientAdapter.get(_handler.selectQuery(query));
   }
 
   protected TServer createServer(int port) {
