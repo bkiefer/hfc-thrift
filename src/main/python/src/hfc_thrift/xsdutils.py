@@ -40,7 +40,7 @@ def xsd2python(xsdstring: str) -> int | str | float:
         return int(value)
     elif name == "string":
         return value
-    elif name == "double":
+    elif name == "double" or name == "float":
         return float(value)
     elif name == "boolean":
         return bool(value)
@@ -59,6 +59,7 @@ INT_MAX_VALUE = 2147483647
 INT_MIN_VALUE = -2147483648
 
 def python2xsd(py_val) -> str:
+    # TODO: HOW CAN WE MAKE SURE THAT, E.G., XSD:FLOAT IS PROPERLY GENERATED?
     if type(py_val) in xsdclassdict:
         xsdtype = xsdclassdict[type(py_val)]
         if xsdtype == "int" and \

@@ -185,7 +185,7 @@ class RdfProxyTestCase(unittest.TestCase):
         self.assertEqual(newchild.age, 7)
         bro1 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_23>")
         bro2 = RdfProxy.createProxy("<dom:Brother>", "<dom:bro_24>")
-        # TODO: This causes an erorr in line 179, as the value returned from HFC is <owl:Nothing>
+        # TODO: This causes an error in line 179, as the value returned from HFC is <owl:Nothing>
         # newchild.hasBrother = []
         # no brothers assigned yet
         self.assertEqual(len(cast(RdfSet, newchild.hasBrother)), 0)
@@ -204,6 +204,10 @@ class RdfProxyTestCase(unittest.TestCase):
         self.assertEqual(2, len(cast(RdfSet, newchild.hasBrother)))
         self.assertTrue(bro2 in newchild.hasBrother and bro3 in newchild.hasBrother)
 
+    def test_float(self):
+        food = RdfProxy.getObject("Food");
+        food.cho = 7.7
+        self.assertEqual(food.cho, 7.7)
 
 if __name__ == '__main__':
     unittest.main()

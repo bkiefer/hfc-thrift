@@ -115,10 +115,15 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
 
   /** Call the core selectQuery method and return a thrift representation of
    *  the result
+   * @throws QueryException 
    */
   @Override
-  public QueryResult selectQuery(String query) {
-    return get(_h.selectQuery(query));
+  public QueryResult selectQuery(String query) throws QueryException {
+    try {
+      return get(_h.selectQuery(query));
+    } catch (de.dfki.lt.hfc.db.QueryException qex) {
+      throw new QueryException(qex.getMessage());
+    }
   }
 
 
@@ -180,7 +185,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
     Map<String, PropInfo> result = new HashMap<>();
     for (String prop : clazz.getProperties()) {
       int type = clazz.getPropertyType(prop);
-      List<String> ranges = new ArrayList(clazz.getPropertyRange(prop));
+      List<String> ranges = new ArrayList<>(clazz.getPropertyRange(prop));
       result.put(prop, new PropInfo(type, ranges));
     }
     return result;
