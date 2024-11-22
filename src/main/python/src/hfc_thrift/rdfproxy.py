@@ -20,6 +20,7 @@ hfc: HfcClient = None  # type: ignore
 
 class RdfProxy:
     FUNCTIONAL_MASK: ClassVar[int] = 4
+    OBJECTS_ARE_NAMED_INDIVIDUALS: ClassVar[bool] = True
 
     # namespace to create new instances in
     namespace: ClassVar[str]
@@ -41,6 +42,8 @@ class RdfProxy:
         """ A factory method to create a new object in the RDF/python world"""
         class_uri = cls.__py2rdf[classname]
         instance_uri = hfc.getNewId(cls.namespace, class_uri)
+        if cls.OBJECTS_ARE_NAMED_INDIVIDUALS:
+            pass
         # create a python clazz object using "introspection"
         return cls.createProxy(class_uri, instance_uri)
 

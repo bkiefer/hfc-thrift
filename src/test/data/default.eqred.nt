@@ -47,8 +47,6 @@
 <owl:equivalentProperty> <rdf:type> <rdf:Property> .
 <owl:equivalentProperty> <rdfs:subPropertyOf> <rdfs:subPropertyOf> .
 
-<owl:sameAs> <rdf:type> <rdf:Property> .
-
 <rdfs:subClassOf> <rdf:type> <owl:TransitiveProperty> .
 <rdfs:subPropertyOf> <rdf:type> <owl:TransitiveProperty> .
 
@@ -64,6 +62,8 @@
 <owl:ObjectProperty> <rdfs:subClassOf> <rdf:Property> .
 <owl:AnnotationProperty> <rdfs:subClassOf> <rdf:Property> .
 
+<owl:sameAs> <rdf:type> <rdf:Property> .
+
 <owl:differentFrom> <rdf:type> <owl:SymmetricProperty> .
 
 # I have added the four below triples
@@ -71,25 +71,26 @@
 <owl:Nothing> <rdf:type> <owl:Class> .
 <owl:Nothing> <rdfs:subClassOf> <owl:Thing> .
 <owl:Thing> <owl:disjointWith> <owl:Nothing> .
+<owl:NamedIndividual> <rdf:type> <owl:Class> .
 
 # (some of the) standard XSD datatypes
 # note: HFC has further custom XSD datatype of its own
 <xsd:anySimpleType> <rdf:type> <rdfs:Datatype> .
 <xsd:anyURI> <rdf:type> <rdfs:Datatype> .
+<xsd:int> <rdf:type> <rdfs:Datatype> .
+<xsd:long> <rdf:type> <rdfs:Datatype> .
+<xsd:float> <rdf:type> <rdfs:Datatype> .
+<xsd:double> <rdf:type> <rdfs:Datatype> .
+<xsd:string> <rdf:type> <rdfs:Datatype> .
 <xsd:boolean> <rdf:type> <rdfs:Datatype> .
 <xsd:date> <rdf:type> <rdfs:Datatype> .
 <xsd:dateTime> <rdf:type> <rdfs:Datatype> .
-<xsd:double> <rdf:type> <rdfs:Datatype> .
-<xsd:duration> <rdf:type> <rdfs:Datatype> .
-<xsd:float> <rdf:type> <rdfs:Datatype> .
-<xsd:gDay> <rdf:type> <rdfs:Datatype> .
-<xsd:gMonth> <rdf:type> <rdfs:Datatype> .
-<xsd:gMonthDay> <rdf:type> <rdfs:Datatype> .
 <xsd:gYear> <rdf:type> <rdfs:Datatype> .
 <xsd:gYearMonth> <rdf:type> <rdfs:Datatype> .
-<xsd:int> <rdf:type> <rdfs:Datatype> .
-<xsd:long> <rdf:type> <rdfs:Datatype> .
-<xsd:string> <rdf:type> <rdfs:Datatype> .
+<xsd:gMonth> <rdf:type> <rdfs:Datatype> .
+<xsd:gMonthDay> <rdf:type> <rdfs:Datatype> .
+<xsd:gDay> <rdf:type> <rdfs:Datatype> .
+<xsd:duration> <rdf:type> <rdfs:Datatype> .
 
 #<rdfs:Datatype> <rdfs:subClassOf> <rdfs:Class> .
 #<owl:Class> <rdfs:subClassOf> <rdfs:Class> .

@@ -21,7 +21,7 @@ public class QueryWindow extends JFrame {
   private static String DEFAULT_QUERY = "select ?s ?o where ?s <rdf:type> ?o ?_";
 
   public static int DEFAULT_FONT_SIZE = 18;
-  
+
   public JTable table;
 
   public JTextField queryInput;
@@ -69,17 +69,17 @@ public class QueryWindow extends JFrame {
       this.fireTableStructureChanged();
     }
   };
-  
+
   private void showMsg(String msg) {
     _statusbar.setText(msg);
     _statusbar.setForeground(new Color(8, 135, 81));
   }
-  
+
   private void showError(String msg) {
     _statusbar.setText(msg);
     _statusbar.setForeground(new Color(222, 41, 38));
   }
-    
+
   public static void interactive (final Queryable client) {
     javax.swing.SwingUtilities.invokeLater(new Runnable() {
       @Override

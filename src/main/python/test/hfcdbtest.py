@@ -105,8 +105,8 @@ class RdfProxyTestCase(unittest.TestCase):
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
-        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 223)  # type: ignore
-        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 223)  # type: ignore
+        self.assertEqual(len(RdfProxy._RdfProxy__rdf2py), 224)  # type: ignore
+        self.assertEqual(len(RdfProxy._RdfProxy__py2rdf), 224)  # type: ignore
         self.assertEqual(RdfProxy.namespace, 'dom:')
 
     def test_preload_classes(self):
@@ -208,6 +208,10 @@ class RdfProxyTestCase(unittest.TestCase):
         food = RdfProxy.getObject("Food");
         food.cho = 7.7
         self.assertEqual(food.cho, 7.7)
+
+    def test_namedindividual(self):
+        ni = RdfProxy.getClass("<owl:NamedIndividual>")
+        self.assertTrue(ni)
 
 if __name__ == '__main__':
     unittest.main()
