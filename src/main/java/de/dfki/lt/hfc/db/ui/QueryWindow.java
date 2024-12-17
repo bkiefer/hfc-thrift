@@ -1,19 +1,45 @@
 package de.dfki.lt.hfc.db.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.table.AbstractTableModel;
 
-import de.dfki.lt.hfc.db.remote.QueryException;
 import de.dfki.lt.hfc.db.QueryResult;
-
-import java.io.IOException;
+import de.dfki.lt.hfc.db.remote.QueryException;
 
 public class QueryWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -67,6 +93,22 @@ public class QueryWindow extends JFrame {
           return o1.get(col).compareTo(o2.get(col));
         }});
       this.fireTableStructureChanged();
+    }
+
+    public void saveToFile(Path path) {
+      try {
+        _qr.saveToFile(path);
+      } catch (IOException ex) {
+        _statusbar.setText("Error saving to file: "+ex.getMessage());
+      }
+    }
+
+    public void saveToGraph(Path path) {
+      try {
+        _qr.saveToGraph(path, true);
+      } catch (IOException ex) {
+        _statusbar.setText("Error saving graph: "+ex.getMessage());
+      }
     }
   };
 
@@ -145,7 +187,25 @@ public class QueryWindow extends JFrame {
     return button;
   }
 
-  private static JTable getResultTable() {
+  private void saveTableToFile(QueryResultModel qr) {
+    // open file save dialog
+    Path p = new SaveFileDialog(this).save();
+    // if not canceled, save table
+    if (p != null) {
+      qr.saveToFile(p);
+    }
+  }
+
+  private void saveTableToGraph(QueryResultModel qr) {
+    // open file save dialog
+    Path p = new SaveFileDialog(this).save();
+    // if not canceled, save table
+    if (p != null) {
+      qr.saveToGraph(p);
+    }
+  }
+
+  private JTable getResultTable() {
     final JTable table = new JTable();
     // listener to sort columns
     table.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -155,6 +215,31 @@ public class QueryWindow extends JFrame {
         // String name = table.getColumnName(col);
         QueryResultModel qrm = (QueryResultModel)table.getModel();
         qrm.sortByColumn(col);
+      }
+    });
+    table.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent event) {
+        int eventX = event.getX();
+        int eventY = event.getY();
+        if (event.getButton() == MouseEvent.BUTTON3) {
+          JPopupMenu pop = new JPopupMenu();
+          // save to file menu item
+          JMenuItem saveToFile = new JMenuItem("Save to File");
+          saveToFile.addActionListener(
+              (e) -> QueryWindow.this.saveTableToFile(
+                  ((QueryResultModel)table.getModel())));
+          pop.add(saveToFile);
+          // save to graph item
+          JMenuItem saveToGraph = new JMenuItem("Save to Graph");
+          saveToGraph.addActionListener(
+              (e) -> QueryWindow.this.saveTableToGraph(
+                  ((QueryResultModel)table.getModel())));
+          pop.add(saveToGraph);
+          saveToGraph.setEnabled(
+              3 == ((QueryResultModel)table.getModel()).getColumnCount());
+          pop.show(table, eventX, eventY);
+        }
       }
     });
     return table;

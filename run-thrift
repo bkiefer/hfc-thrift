@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -xv
 scriptdir=`dirname $0`
 cd "$scriptdir"
 
@@ -15,16 +16,19 @@ findnewest() {
 
 for lang in cpp java py; do
     if test "$lang" = "py"; then
-        target_dir="$to_dir/python/src"
+        target_dir="$to_dir/python/src/hfc_db"
     else
         target_dir="$to_dir/gen-$lang"
     fi
     newestgen=`findnewest "$target_dir"`
     newestthrift=`findnewest src/main/thrift`
-    if test "$newestthrift" -nt "$newestgen"; then
+    test \! -d "$target_dir" && echo no_dir
+    test "$newestthrift" -nt "$newestgen" && echo newer
+    if test \! -d "$target_dir" \
+            -o \( "$newestthrift" -nt "$newestgen" \); then
         for thrift_file in `find $thrift_dir -name \*.thrift`; do
             if test "$lang" = "py"; then
-                thrift -v --gen $lang -out "$target_dir" "$thrift_file"
+                thrift -v --gen $lang -out "${target_dir%%/hfc_db}" "$thrift_file"
             else
                 thrift -v --gen $lang -o "$to_dir" "$thrift_file"
             fi

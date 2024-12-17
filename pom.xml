@@ -7,7 +7,7 @@
 
   <groupId>de.dfki.lt.hfc</groupId>
   <artifactId>hfc-thrift</artifactId>
-  <version>1.2.2</version>
+  <version>1.2.3</version>
   <packaging>jar</packaging>
 
   <inceptionYear>2023</inceptionYear>
@@ -23,13 +23,13 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>0.20.0</version>
+      <version>0.21.0</version>
     </dependency>
 
     <dependency>
       <groupId>de.dfki.lt.hfc</groupId>
       <artifactId>hfc</artifactId>
-      <version>[1.5.11,)</version>
+      <version>[1.5.12,)</version>
       <type>jar</type>
     </dependency>
 
