@@ -2,6 +2,6 @@
 scriptdir=`dirname $0`
 cd "$scriptdir"
 
-./run-thrift
+#./run-thrift
 mvn -U clean install
 mvn -f apps.xml install
