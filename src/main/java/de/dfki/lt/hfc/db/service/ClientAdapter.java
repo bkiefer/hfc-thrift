@@ -1,5 +1,6 @@
 package de.dfki.lt.hfc.db.service;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.thrift.TException;
@@ -11,6 +12,7 @@ import de.dfki.lt.hfc.db.StreamingClient;
 import de.dfki.lt.hfc.db.Table;
 import de.dfki.lt.hfc.db.rdfProxy.DbClient;
 import de.dfki.lt.hfc.db.remote.HfcDbService;
+import de.dfki.lt.hfc.db.remote.PropInfo;
 
 /** Turn a client that talks over the network into a HFC-only client */
 public class ClientAdapter implements DbClient {
@@ -141,6 +143,22 @@ public class ClientAdapter implements DbClient {
   public String getClassOf(String uri) {
     try {
       return _client.getClassOf(uri);
+    } catch (TException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  public boolean isSubclassOf(String sup, String sub) {
+    try {
+      return _client.isSubclassOf(sup, sub);
+    } catch (TException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  public Map<String, PropInfo> getAllProps(String classuri) {
+    try {
+      return _client.getAllProps(classuri);
     } catch (TException ex) {
       throw new RuntimeException(ex);
     }

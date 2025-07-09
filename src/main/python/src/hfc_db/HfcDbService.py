@@ -167,6 +167,15 @@ class Iface(object):
         """
         pass
 
+    def isSubclassOf(self, superclassuri, subclassuri):
+        """
+        Parameters:
+         - superclassuri
+         - subclassuri
+
+        """
+        pass
+
     def getClassOf(self, uri):
         """
         Parameters:
@@ -797,6 +806,40 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "getAllProps failed: unknown result")
 
+    def isSubclassOf(self, superclassuri, subclassuri):
+        """
+        Parameters:
+         - superclassuri
+         - subclassuri
+
+        """
+        self.send_isSubclassOf(superclassuri, subclassuri)
+        return self.recv_isSubclassOf()
+
+    def send_isSubclassOf(self, superclassuri, subclassuri):
+        self._oprot.writeMessageBegin('isSubclassOf', TMessageType.CALL, self._seqid)
+        args = isSubclassOf_args()
+        args.superclassuri = superclassuri
+        args.subclassuri = subclassuri
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_isSubclassOf(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = isSubclassOf_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "isSubclassOf failed: unknown result")
+
     def getClassOf(self, uri):
         """
         Parameters:
@@ -852,6 +895,7 @@ class Processor(Iface, TProcessor):
         self._processMap["setValue"] = Processor.process_setValue
         self._processMap["getValue"] = Processor.process_getValue
         self._processMap["getAllProps"] = Processor.process_getAllProps
+        self._processMap["isSubclassOf"] = Processor.process_isSubclassOf
         self._processMap["getClassOf"] = Processor.process_getClassOf
         self._on_message_begin = None
 
@@ -1327,6 +1371,29 @@ class Processor(Iface, TProcessor):
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("getAllProps", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_isSubclassOf(self, seqid, iprot, oprot):
+        args = isSubclassOf_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = isSubclassOf_result()
+        try:
+            result.success = self._handler.isSubclassOf(args.superclassuri, args.subclassuri)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("isSubclassOf", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -3921,6 +3988,145 @@ class getAllProps_result(object):
 all_structs.append(getAllProps_result)
 getAllProps_result.thrift_spec = (
     (0, TType.MAP, 'success', (TType.STRING, 'UTF8', TType.STRUCT, [PropInfo, None], False), None, ),  # 0
+)
+
+
+class isSubclassOf_args(object):
+    """
+    Attributes:
+     - superclassuri
+     - subclassuri
+
+    """
+    thrift_spec = None
+
+
+    def __init__(self, superclassuri = None, subclassuri = None,):
+        self.superclassuri = superclassuri
+        self.subclassuri = subclassuri
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.superclassuri = iprot.readString().decode('utf-8', errors='replace') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.subclassuri = iprot.readString().decode('utf-8', errors='replace') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        self.validate()
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('isSubclassOf_args')
+        if self.superclassuri is not None:
+            oprot.writeFieldBegin('superclassuri', TType.STRING, 1)
+            oprot.writeString(self.superclassuri.encode('utf-8') if sys.version_info[0] == 2 else self.superclassuri)
+            oprot.writeFieldEnd()
+        if self.subclassuri is not None:
+            oprot.writeFieldBegin('subclassuri', TType.STRING, 2)
+            oprot.writeString(self.subclassuri.encode('utf-8') if sys.version_info[0] == 2 else self.subclassuri)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(isSubclassOf_args)
+isSubclassOf_args.thrift_spec = (
+    None,  # 0
+    (1, TType.STRING, 'superclassuri', 'UTF8', None, ),  # 1
+    (2, TType.STRING, 'subclassuri', 'UTF8', None, ),  # 2
+)
+
+
+class isSubclassOf_result(object):
+    """
+    Attributes:
+     - success
+
+    """
+    thrift_spec = None
+
+
+    def __init__(self, success = None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.BOOL:
+                    self.success = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        self.validate()
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('isSubclassOf_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.BOOL, 0)
+            oprot.writeBool(self.success)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(isSubclassOf_result)
+isSubclassOf_result.thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ),  # 0
 )
 
 

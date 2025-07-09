@@ -3971,6 +3971,216 @@ uint32_t HfcDbService_getAllProps_presult::read(::apache::thrift::protocol::TPro
 }
 
 
+HfcDbService_isSubclassOf_args::~HfcDbService_isSubclassOf_args() noexcept {
+}
+
+HfcDbService_isSubclassOf_args::HfcDbService_isSubclassOf_args() noexcept
+   : superclassuri(),
+     subclassuri() {
+}
+
+uint32_t HfcDbService_isSubclassOf_args::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->superclassuri);
+          this->__isset.superclassuri = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_STRING) {
+          xfer += iprot->readString(this->subclassuri);
+          this->__isset.subclassuri = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t HfcDbService_isSubclassOf_args::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("HfcDbService_isSubclassOf_args");
+
+  xfer += oprot->writeFieldBegin("superclassuri", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString(this->superclassuri);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("subclassuri", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString(this->subclassuri);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+HfcDbService_isSubclassOf_pargs::~HfcDbService_isSubclassOf_pargs() noexcept {
+}
+
+
+uint32_t HfcDbService_isSubclassOf_pargs::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("HfcDbService_isSubclassOf_pargs");
+
+  xfer += oprot->writeFieldBegin("superclassuri", ::apache::thrift::protocol::T_STRING, 1);
+  xfer += oprot->writeString((*(this->superclassuri)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("subclassuri", ::apache::thrift::protocol::T_STRING, 2);
+  xfer += oprot->writeString((*(this->subclassuri)));
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+HfcDbService_isSubclassOf_result::~HfcDbService_isSubclassOf_result() noexcept {
+}
+
+HfcDbService_isSubclassOf_result::HfcDbService_isSubclassOf_result() noexcept
+   : success(0) {
+}
+
+uint32_t HfcDbService_isSubclassOf_result::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool(this->success);
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t HfcDbService_isSubclassOf_result::write(::apache::thrift::protocol::TProtocol* oprot) const {
+
+  uint32_t xfer = 0;
+
+  xfer += oprot->writeStructBegin("HfcDbService_isSubclassOf_result");
+
+  if (this->__isset.success) {
+    xfer += oprot->writeFieldBegin("success", ::apache::thrift::protocol::T_BOOL, 0);
+    xfer += oprot->writeBool(this->success);
+    xfer += oprot->writeFieldEnd();
+  }
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+
+HfcDbService_isSubclassOf_presult::~HfcDbService_isSubclassOf_presult() noexcept {
+}
+
+
+uint32_t HfcDbService_isSubclassOf_presult::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+        if (ftype == ::apache::thrift::protocol::T_BOOL) {
+          xfer += iprot->readBool((*(this->success)));
+          this->__isset.success = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+
 HfcDbService_getClassOf_args::~HfcDbService_getClassOf_args() noexcept {
 }
 
@@ -5250,6 +5460,65 @@ void HfcDbServiceClient::recv_getAllProps(std::map<std::string, PropInfo> & _ret
   throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getAllProps failed: unknown result");
 }
 
+bool HfcDbServiceClient::isSubclassOf(const std::string& superclassuri, const std::string& subclassuri)
+{
+  send_isSubclassOf(superclassuri, subclassuri);
+  return recv_isSubclassOf();
+}
+
+void HfcDbServiceClient::send_isSubclassOf(const std::string& superclassuri, const std::string& subclassuri)
+{
+  int32_t cseqid = 0;
+  oprot_->writeMessageBegin("isSubclassOf", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  HfcDbService_isSubclassOf_pargs args;
+  args.superclassuri = &superclassuri;
+  args.subclassuri = &subclassuri;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+}
+
+bool HfcDbServiceClient::recv_isSubclassOf()
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  iprot_->readMessageBegin(fname, mtype, rseqid);
+  if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+    ::apache::thrift::TApplicationException x;
+    x.read(iprot_);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+    throw x;
+  }
+  if (mtype != ::apache::thrift::protocol::T_REPLY) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  if (fname.compare("isSubclassOf") != 0) {
+    iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+    iprot_->readMessageEnd();
+    iprot_->getTransport()->readEnd();
+  }
+  bool _return;
+  HfcDbService_isSubclassOf_presult result;
+  result.success = &_return;
+  result.read(iprot_);
+  iprot_->readMessageEnd();
+  iprot_->getTransport()->readEnd();
+
+  if (result.__isset.success) {
+    return _return;
+  }
+  throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "isSubclassOf failed: unknown result");
+}
+
 void HfcDbServiceClient::getClassOf(std::string& _return, const std::string& uri)
 {
   send_getClassOf(uri);
@@ -6336,6 +6605,60 @@ void HfcDbServiceProcessor::process_getAllProps(int32_t seqid, ::apache::thrift:
 
   if (this->eventHandler_.get() != nullptr) {
     this->eventHandler_->postWrite(ctx, "HfcDbService.getAllProps", bytes);
+  }
+}
+
+void HfcDbServiceProcessor::process_isSubclassOf(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext)
+{
+  void* ctx = nullptr;
+  if (this->eventHandler_.get() != nullptr) {
+    ctx = this->eventHandler_->getContext("HfcDbService.isSubclassOf", callContext);
+  }
+  ::apache::thrift::TProcessorContextFreer freer(this->eventHandler_.get(), ctx, "HfcDbService.isSubclassOf");
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preRead(ctx, "HfcDbService.isSubclassOf");
+  }
+
+  HfcDbService_isSubclassOf_args args;
+  args.read(iprot);
+  iprot->readMessageEnd();
+  uint32_t bytes = iprot->getTransport()->readEnd();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postRead(ctx, "HfcDbService.isSubclassOf", bytes);
+  }
+
+  HfcDbService_isSubclassOf_result result;
+  try {
+    result.success = iface_->isSubclassOf(args.superclassuri, args.subclassuri);
+    result.__isset.success = true;
+  } catch (const std::exception& e) {
+    if (this->eventHandler_.get() != nullptr) {
+      this->eventHandler_->handlerError(ctx, "HfcDbService.isSubclassOf");
+    }
+
+    ::apache::thrift::TApplicationException x(e.what());
+    oprot->writeMessageBegin("isSubclassOf", ::apache::thrift::protocol::T_EXCEPTION, seqid);
+    x.write(oprot);
+    oprot->writeMessageEnd();
+    oprot->getTransport()->writeEnd();
+    oprot->getTransport()->flush();
+    return;
+  }
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->preWrite(ctx, "HfcDbService.isSubclassOf");
+  }
+
+  oprot->writeMessageBegin("isSubclassOf", ::apache::thrift::protocol::T_REPLY, seqid);
+  result.write(oprot);
+  oprot->writeMessageEnd();
+  bytes = oprot->getTransport()->writeEnd();
+  oprot->getTransport()->flush();
+
+  if (this->eventHandler_.get() != nullptr) {
+    this->eventHandler_->postWrite(ctx, "HfcDbService.isSubclassOf", bytes);
   }
 }
 
@@ -7958,6 +8281,91 @@ void HfcDbServiceConcurrentClient::recv_getAllProps(std::map<std::string, PropIn
       }
       // in a bad state, don't commit
       throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "getAllProps failed: unknown result");
+    }
+    // seqid != rseqid
+    this->sync_->updatePending(fname, mtype, rseqid);
+
+    // this will temporarily unlock the readMutex, and let other clients get work done
+    this->sync_->waitForWork(seqid);
+  } // end while(true)
+}
+
+bool HfcDbServiceConcurrentClient::isSubclassOf(const std::string& superclassuri, const std::string& subclassuri)
+{
+  int32_t seqid = send_isSubclassOf(superclassuri, subclassuri);
+  return recv_isSubclassOf(seqid);
+}
+
+int32_t HfcDbServiceConcurrentClient::send_isSubclassOf(const std::string& superclassuri, const std::string& subclassuri)
+{
+  int32_t cseqid = this->sync_->generateSeqId();
+  ::apache::thrift::async::TConcurrentSendSentry sentry(this->sync_.get());
+  oprot_->writeMessageBegin("isSubclassOf", ::apache::thrift::protocol::T_CALL, cseqid);
+
+  HfcDbService_isSubclassOf_pargs args;
+  args.superclassuri = &superclassuri;
+  args.subclassuri = &subclassuri;
+  args.write(oprot_);
+
+  oprot_->writeMessageEnd();
+  oprot_->getTransport()->writeEnd();
+  oprot_->getTransport()->flush();
+
+  sentry.commit();
+  return cseqid;
+}
+
+bool HfcDbServiceConcurrentClient::recv_isSubclassOf(const int32_t seqid)
+{
+
+  int32_t rseqid = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TMessageType mtype;
+
+  // the read mutex gets dropped and reacquired as part of waitForWork()
+  // The destructor of this sentry wakes up other clients
+  ::apache::thrift::async::TConcurrentRecvSentry sentry(this->sync_.get(), seqid);
+
+  while(true) {
+    if(!this->sync_->getPending(fname, mtype, rseqid)) {
+      iprot_->readMessageBegin(fname, mtype, rseqid);
+    }
+    if(seqid == rseqid) {
+      if (mtype == ::apache::thrift::protocol::T_EXCEPTION) {
+        ::apache::thrift::TApplicationException x;
+        x.read(iprot_);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+        sentry.commit();
+        throw x;
+      }
+      if (mtype != ::apache::thrift::protocol::T_REPLY) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+      }
+      if (fname.compare("isSubclassOf") != 0) {
+        iprot_->skip(::apache::thrift::protocol::T_STRUCT);
+        iprot_->readMessageEnd();
+        iprot_->getTransport()->readEnd();
+
+        // in a bad state, don't commit
+        using ::apache::thrift::protocol::TProtocolException;
+        throw TProtocolException(TProtocolException::INVALID_DATA);
+      }
+      bool _return;
+      HfcDbService_isSubclassOf_presult result;
+      result.success = &_return;
+      result.read(iprot_);
+      iprot_->readMessageEnd();
+      iprot_->getTransport()->readEnd();
+
+      if (result.__isset.success) {
+        sentry.commit();
+        return _return;
+      }
+      // in a bad state, don't commit
+      throw ::apache::thrift::TApplicationException(::apache::thrift::TApplicationException::MISSING_RESULT, "isSubclassOf failed: unknown result");
     }
     // seqid != rseqid
     this->sync_->updatePending(fname, mtype, rseqid);

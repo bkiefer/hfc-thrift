@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.thrift.TException;
@@ -18,6 +19,7 @@ import de.dfki.lt.hfc.db.QueryResult;
 import de.dfki.lt.hfc.db.Table;
 import de.dfki.lt.hfc.db.TupleException;
 import de.dfki.lt.hfc.db.client.HfcDbClient;
+import de.dfki.lt.hfc.db.remote.PropInfo;
 import de.dfki.lt.hfc.db.service.ClientAdapter;
 
 public class TestClient {
@@ -164,6 +166,39 @@ public class TestClient {
     String clazzuri = ((ClientAdapter)client._client).getClassOf(child);
     assertEquals("<dom:Child>", clazzuri);
   }
+
+
+  /**
+   * Test of getRdf method, of class RdfProxy.
+   * @throws TException
+   *
+   * @throws java.lang.Exception
+   */
+  @Test
+  public void testGetAllProps() throws TException {
+    String child = "<dom:Child>";
+    Map<String, PropInfo> res =
+        ((ClientAdapter)client._client).getAllProps(child);
+    assertEquals(44, res.size());
+    assertEquals(5, res.get("<dom:hasSession>").type);
+  }
+
+
+  /**
+   * Test of getRdf method, of class RdfProxy.
+   * @throws TException
+   *
+   * @throws java.lang.Exception
+   */
+  @Test
+  public void testIsSubClassOf() throws TException {
+    String sub = "<dom:Administrator>";
+    String sup = "<dom:Animate>";
+    assertTrue(((ClientAdapter)client._client).isSubclassOf(sup, sub));
+    assertFalse(((ClientAdapter)client._client).isSubclassOf(sub, sup));
+  }
+
+
 
   /*
   @Test

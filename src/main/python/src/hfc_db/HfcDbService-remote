@@ -42,6 +42,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('  i32 setValue(string uri, string predicate, string value)')
     print('  string getValue(string uri, string predicate)')
     print('   getAllProps(string classuri)')
+    print('  bool isSubclassOf(string superclassuri, string subclassuri)')
     print('  string getClassOf(string uri)')
     print('')
     sys.exit(0)
@@ -229,6 +230,12 @@ elif cmd == 'getAllProps':
         print('getAllProps requires 1 args')
         sys.exit(1)
     pp.pprint(client.getAllProps(args[0],))
+
+elif cmd == 'isSubclassOf':
+    if len(args) != 2:
+        print('isSubclassOf requires 2 args')
+        sys.exit(1)
+    pp.pprint(client.isSubclassOf(args[0], args[1],))
 
 elif cmd == 'getClassOf':
     if len(args) != 1:

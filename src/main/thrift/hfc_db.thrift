@@ -113,6 +113,9 @@ service HfcDbService {
   // method to support python client: get internal info about properties
   map<string, PropInfo> getAllProps(1: string classuri)
 
+  // is the first class a superclass of the second?
+  bool isSubclassOf(1: string superclassuri, 2: string subclassuri) 
+
   // The the most specific class this uri is a type of
   string getClassOf(1: string uri)
 }

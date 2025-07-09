@@ -40,6 +40,7 @@ class HfcDbServiceIf {
   virtual int32_t setValue(const std::string& uri, const std::string& predicate, const std::string& value) = 0;
   virtual void getValue(std::string& _return, const std::string& uri, const std::string& predicate) = 0;
   virtual void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) = 0;
+  virtual bool isSubclassOf(const std::string& superclassuri, const std::string& subclassuri) = 0;
   virtual void getClassOf(std::string& _return, const std::string& uri) = 0;
 };
 
@@ -133,6 +134,10 @@ class HfcDbServiceNull : virtual public HfcDbServiceIf {
   }
   void getAllProps(std::map<std::string, PropInfo> & /* _return */, const std::string& /* classuri */) override {
     return;
+  }
+  bool isSubclassOf(const std::string& /* superclassuri */, const std::string& /* subclassuri */) override {
+    bool _return = false;
+    return _return;
   }
   void getClassOf(std::string& /* _return */, const std::string& /* uri */) override {
     return;
@@ -1892,6 +1897,103 @@ class HfcDbService_getAllProps_presult {
 
 };
 
+typedef struct _HfcDbService_isSubclassOf_args__isset {
+  _HfcDbService_isSubclassOf_args__isset() : superclassuri(false), subclassuri(false) {}
+  bool superclassuri :1;
+  bool subclassuri :1;
+} _HfcDbService_isSubclassOf_args__isset;
+
+class HfcDbService_isSubclassOf_args {
+ public:
+
+  HfcDbService_isSubclassOf_args(const HfcDbService_isSubclassOf_args&);
+  HfcDbService_isSubclassOf_args& operator=(const HfcDbService_isSubclassOf_args&);
+  HfcDbService_isSubclassOf_args() noexcept;
+
+  virtual ~HfcDbService_isSubclassOf_args() noexcept;
+  std::string superclassuri;
+  std::string subclassuri;
+
+  _HfcDbService_isSubclassOf_args__isset __isset;
+
+  void __set_superclassuri(const std::string& val);
+
+  void __set_subclassuri(const std::string& val);
+
+  bool operator == (const HfcDbService_isSubclassOf_args & rhs) const;
+  bool operator != (const HfcDbService_isSubclassOf_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_isSubclassOf_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class HfcDbService_isSubclassOf_pargs {
+ public:
+
+
+  virtual ~HfcDbService_isSubclassOf_pargs() noexcept;
+  const std::string* superclassuri;
+  const std::string* subclassuri;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _HfcDbService_isSubclassOf_result__isset {
+  _HfcDbService_isSubclassOf_result__isset() : success(false) {}
+  bool success :1;
+} _HfcDbService_isSubclassOf_result__isset;
+
+class HfcDbService_isSubclassOf_result {
+ public:
+
+  HfcDbService_isSubclassOf_result(const HfcDbService_isSubclassOf_result&) noexcept;
+  HfcDbService_isSubclassOf_result& operator=(const HfcDbService_isSubclassOf_result&) noexcept;
+  HfcDbService_isSubclassOf_result() noexcept;
+
+  virtual ~HfcDbService_isSubclassOf_result() noexcept;
+  bool success;
+
+  _HfcDbService_isSubclassOf_result__isset __isset;
+
+  void __set_success(const bool val);
+
+  bool operator == (const HfcDbService_isSubclassOf_result & rhs) const;
+  bool operator != (const HfcDbService_isSubclassOf_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const HfcDbService_isSubclassOf_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _HfcDbService_isSubclassOf_presult__isset {
+  _HfcDbService_isSubclassOf_presult__isset() : success(false) {}
+  bool success :1;
+} _HfcDbService_isSubclassOf_presult__isset;
+
+class HfcDbService_isSubclassOf_presult {
+ public:
+
+
+  virtual ~HfcDbService_isSubclassOf_presult() noexcept;
+  bool* success;
+
+  _HfcDbService_isSubclassOf_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 typedef struct _HfcDbService_getClassOf_args__isset {
   _HfcDbService_getClassOf_args__isset() : uri(false) {}
   bool uri :1;
@@ -2063,6 +2165,9 @@ class HfcDbServiceClient : virtual public HfcDbServiceIf {
   void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) override;
   void send_getAllProps(const std::string& classuri);
   void recv_getAllProps(std::map<std::string, PropInfo> & _return);
+  bool isSubclassOf(const std::string& superclassuri, const std::string& subclassuri) override;
+  void send_isSubclassOf(const std::string& superclassuri, const std::string& subclassuri);
+  bool recv_isSubclassOf();
   void getClassOf(std::string& _return, const std::string& uri) override;
   void send_getClassOf(const std::string& uri);
   void recv_getClassOf(std::string& _return);
@@ -2099,6 +2204,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
   void process_setValue(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getValue(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getAllProps(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_isSubclassOf(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_getClassOf(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   HfcDbServiceProcessor(::std::shared_ptr<HfcDbServiceIf> iface) :
@@ -2121,6 +2227,7 @@ class HfcDbServiceProcessor : public ::apache::thrift::TDispatchProcessor {
     processMap_["setValue"] = &HfcDbServiceProcessor::process_setValue;
     processMap_["getValue"] = &HfcDbServiceProcessor::process_getValue;
     processMap_["getAllProps"] = &HfcDbServiceProcessor::process_getAllProps;
+    processMap_["isSubclassOf"] = &HfcDbServiceProcessor::process_isSubclassOf;
     processMap_["getClassOf"] = &HfcDbServiceProcessor::process_getClassOf;
   }
 
@@ -2318,6 +2425,15 @@ class HfcDbServiceMultiface : virtual public HfcDbServiceIf {
     return;
   }
 
+  bool isSubclassOf(const std::string& superclassuri, const std::string& subclassuri) override {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->isSubclassOf(superclassuri, subclassuri);
+    }
+    return ifaces_[i]->isSubclassOf(superclassuri, subclassuri);
+  }
+
   void getClassOf(std::string& _return, const std::string& uri) override {
     size_t sz = ifaces_.size();
     size_t i = 0;
@@ -2414,6 +2530,9 @@ class HfcDbServiceConcurrentClient : virtual public HfcDbServiceIf {
   void getAllProps(std::map<std::string, PropInfo> & _return, const std::string& classuri) override;
   int32_t send_getAllProps(const std::string& classuri);
   void recv_getAllProps(std::map<std::string, PropInfo> & _return, const int32_t seqid);
+  bool isSubclassOf(const std::string& superclassuri, const std::string& subclassuri) override;
+  int32_t send_isSubclassOf(const std::string& superclassuri, const std::string& subclassuri);
+  bool recv_isSubclassOf(const int32_t seqid);
   void getClassOf(std::string& _return, const std::string& uri) override;
   int32_t send_getClassOf(const std::string& uri);
   void recv_getClassOf(std::string& _return, const int32_t seqid);

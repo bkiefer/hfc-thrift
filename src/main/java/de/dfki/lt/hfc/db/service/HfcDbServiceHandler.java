@@ -115,7 +115,7 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
 
   /** Call the core selectQuery method and return a thrift representation of
    *  the result
-   * @throws QueryException 
+   * @throws QueryException
    */
   @Override
   public QueryResult selectQuery(String query) throws QueryException {
@@ -194,6 +194,12 @@ public class HfcDbServiceHandler implements HfcDbService.Iface {
   @Override
   public String getClassOf(String uri) {
     return _proxy.getMostSpecificClass(uri).toString();
+  }
+
+  public boolean isSubclassOf(String superClassUri, String subClassUri) {
+    RdfClass sup = _proxy.getClass(superClassUri);
+    RdfClass sub = _proxy.getClass(subClassUri);
+    return sup.isSuperclassOf(sub);
   }
 
   @Override

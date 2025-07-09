@@ -38,6 +38,14 @@ class RdfProxy:
     __uri2pyobject: ClassVar[dict[str, 'RdfProxy']] = dict()
 
     @classmethod
+    def newObject(cls, self, instance_uri=None):
+        clazz = self.__class__
+        if instance_uri == None:
+            instance_uri = hfc.getNewId(cls.namespace, clazz.__clazzuri)
+        super(RdfProxy, self).__setattr__('uri', instance_uri)
+        RdfProxy.__uri2pyobject[instance_uri] = self
+
+    @classmethod
     def getObject(cls, classname: str) -> 'RdfProxy':
         """ A factory method to create a new object in the RDF/python world"""
         class_uri = cls.__py2rdf[classname]
@@ -87,6 +95,19 @@ class RdfProxy:
         else:
             # now it better be an XSD compatible datatype
             return python2xsd(object)
+
+    @staticmethod
+    def subclass_of(sup, sub):
+        return hfc.isSubclassOf(sup, sub)
+
+    @classmethod
+    def superclass_of(cls, sub):
+        try:
+            supuri = cls.__clazzuri
+            suburi = sub.__clazzuri
+            return cls.subclass_of(supuri, suburi)
+        except:
+            return None
 
     @classmethod
     def preload_classes(cls, classmapping: dict) -> None:
@@ -174,9 +195,7 @@ class RdfProxy:
         if instance_uri in cls.__uri2pyobject:
             return cls.__uri2pyobject[instance_uri]
         clazz = RdfProxy.getClass(class_uri)
-        pyobj = clazz(instance_uri)
-        RdfProxy.__uri2pyobject[instance_uri] = pyobj
-        return pyobj
+        return clazz(instance_uri)
 
     @classmethod
     def askQuery(cls, query: str) -> bool:
@@ -214,11 +233,13 @@ class RdfProxy:
             table.append(row)
         return table
 
-    def __init__(self, uri=None):
-        super(__class__, self).__setattr__("uri", uri)  # my uri
 
     def isFunctional(self, prop_uri):
         return self.__class__.__propertyType[prop_uri] & RdfProxy.FUNCTIONAL_MASK
+
+    def unbound(self, slot):
+        """return true if the slot has no value in the DB"""
+
 
     def __getattr__(self, slot):
         # should we have an abstract method checking slot validity?
@@ -292,6 +313,6 @@ def classfactory(classname: str) -> type['RdfProxy']:
     newclass = type(classname, (RdfProxy,), {
 
         # constructor
-        "__init__": RdfProxy.__init__,
+        "__init__": lambda self, uri=None: self.newObject(self, uri)
     })
     return cast(Type[RdfProxy], newclass)

@@ -12,7 +12,7 @@ import de.dfki.lt.hfc.db.service.ClientAdapter;
 
 public class TestUtils {
 
-  public static final String RESOURCE_DIR = "src/test/data/";
+  public static final String RESOURCE_DIR = "src/test/resources/data/";
 
   public static final int SERVER_PORT = 8994;
 

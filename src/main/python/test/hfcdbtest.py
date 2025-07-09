@@ -62,7 +62,7 @@ class RdfProxyTestCase(unittest.TestCase):
             cls.proc = subprocess.Popen(["/usr/bin/java",
                                          "-Dlogback.configurationFile=./logback.xml",
                                          "-jar", "target/hfc-server.jar",
-                                         "-p", str(port), "src/test/data/test.yml"],
+                                         "-p", str(port), "src/test/resources/data/test.yml"],
                                         encoding="UTF-8",
                                         stdout=subprocess.PIPE)
             for line in (cls.proc.stdout or []):
@@ -212,6 +212,17 @@ class RdfProxyTestCase(unittest.TestCase):
     def test_namedindividual(self):
         ni = RdfProxy.getClass("<owl:NamedIndividual>")
         self.assertTrue(ni)
+
+    def test_issubclassof(self):
+        sup = RdfProxy.subclass_of("<dom:Animate>", "<dom:Administrator>")
+        self.assertTrue(sup)
+
+    def test_subclassof(self):
+        sup = RdfProxy.getClass("<dom:Animate>")
+        sub = RdfProxy.getClass("<dom:Administrator>")
+        res = sup.superclass_of(sub)
+        self.assertTrue(res)
+        self.assertFalse(sub.superclass_of(sup))
 
 if __name__ == '__main__':
     unittest.main()

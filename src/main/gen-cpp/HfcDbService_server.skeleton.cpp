@@ -110,6 +110,11 @@ class HfcDbServiceHandler : virtual public HfcDbServiceIf {
     printf("getAllProps\n");
   }
 
+  bool isSubclassOf(const std::string& superclassuri, const std::string& subclassuri) {
+    // Your implementation goes here
+    printf("isSubclassOf\n");
+  }
+
   void getClassOf(std::string& _return, const std::string& uri) {
     // Your implementation goes here
     printf("getClassOf\n");
