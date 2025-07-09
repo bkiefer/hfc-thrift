@@ -21,6 +21,7 @@ hfc: HfcClient = None  # type: ignore
 class RdfProxy:
     FUNCTIONAL_MASK: ClassVar[int] = 4
     OBJECTS_ARE_NAMED_INDIVIDUALS: ClassVar[bool] = True
+    UNDEFINED_SLOTS_ARE_ERRORS = False
 
     # namespace to create new instances in
     namespace: ClassVar[str]
@@ -47,13 +48,13 @@ class RdfProxy:
 
     @classmethod
     def getObject(cls, classname: str) -> 'RdfProxy':
-        """ A factory method to create a new object in the RDF/python world"""
+        """ A factory method to create a new object in the RDF/python world
+            from the class name"""
         class_uri = cls.__py2rdf[classname]
-        instance_uri = hfc.getNewId(cls.namespace, class_uri)
         if cls.OBJECTS_ARE_NAMED_INDIVIDUALS:
             pass
         # create a python clazz object using "introspection"
-        return cls.createProxy(class_uri, instance_uri)
+        return cls.getClass(class_uri)()
 
     @classmethod
     def rdf2pyobj(cls, uri: str) -> Union[int, str, float, 'RdfProxy']:
@@ -136,6 +137,7 @@ class RdfProxy:
             hfc = connect(host, port)
             cls.namespace = ns
             cls.preload_classes(classmapping)
+            cls.__uri2pyobject['<owl:Nothing>'] = 'UNBOUND'
 
     @classmethod
     def shutdown_rdfproxy(cls) -> None:
@@ -173,6 +175,7 @@ class RdfProxy:
 
     @classmethod
     def getClass(cls, class_uri: str) -> type['RdfProxy']:
+        """Get the python class for a specific class id"""
         if class_uri in cls.__uri2pyclass:
             return cls.__uri2pyclass[class_uri]
         else:
@@ -184,6 +187,18 @@ class RdfProxy:
             cls.__uri2pyclass[class_uri] = clazz
             assert issubclass(clazz, RdfProxy)
             return clazz
+
+    @classmethod
+    def getProxy(cls, instance_uri):
+        """
+        Get a python proxy object for an existing instance URI, None if the
+        object is not in the database
+        """
+        try:
+            clazz_uri = hfc.getClassOf(instance_uri)
+            return cls.createProxy(clazz_uri, instance_uri)
+        except:
+            return None
 
     @classmethod
     def createProxy(cls, class_uri: str, instance_uri: str) -> 'RdfProxy':
@@ -240,20 +255,33 @@ class RdfProxy:
     def unbound(self, slot):
         """return true if the slot has no value in the DB"""
 
+    def __slot_defined(self, slot):
+        if slot not in self._RdfProxy__propertyBaseToFull:
+            if RdfProxy.UNDEFINED_SLOTS_ARE_ERRORS:
+                raise KeyError(f'property {slot} not defined for OWL class {self.__py2rdf[self.__class__.__name__]}')
+            else:
+                return False;
+        return True
 
     def __getattr__(self, slot):
         # should we have an abstract method checking slot validity?
-        rdfprop = self._RdfProxy__propertyBaseToFull[slot]
+        if not self.__slot_defined(slot):
+            return False, 'UNBOUND'
+        rdfprop = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfprop):
             return self.get_rdf_as_pyobj(rdfprop)
         return self.get_rdf_as_rdfset(rdfprop)
 
     def __setattr__(self, slot, value):
         # should we have an abstract method checking slot/value validity?
-        rdfvalue = RdfProxy.python2rdf(value)
-        if slot not in self.__propertyBaseToFull:
-            raise KeyError(f'property {slot} not defined for OWL class {self.__py2rdf[self.__class__.__name__]}')
-        rdfslot = self.__propertyBaseToFull[slot]
+        if self.__slot_defined(slot):
+            rdfvalue = RdfProxy.python2rdf(value)
+            rdfslot = self.__propertyBaseToFull[slot]
+        else:
+            rdfvalue = RdfProxy.python2rdf(value)
+            rdfslot = "<" + RdfProxy.namespace + slot +">"
+            self.__propertyBaseToFull[slot] = rdfslot
+            self.__propertyType[rdfslot] = 1
         if self.isFunctional(rdfslot):
             hfc.setValue(self.uri, rdfslot, rdfvalue)
         else:

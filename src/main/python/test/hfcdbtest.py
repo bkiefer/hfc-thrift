@@ -101,7 +101,7 @@ class RdfProxyTestCase(unittest.TestCase):
 
     def setUp(self):
         if not sys.platform.startswith('linux'):
-            rdfproxy.hfc.init("src/test/data/test.yml")
+            rdfproxy.hfc.init("src/test/resources/data/test.yml")
 
     def test_init_rdfproxy(self):
         # init_rdfproxy is called in test class setup, verify its effects here
@@ -205,7 +205,7 @@ class RdfProxyTestCase(unittest.TestCase):
         self.assertTrue(bro2 in newchild.hasBrother and bro3 in newchild.hasBrother)
 
     def test_float(self):
-        food = RdfProxy.getObject("Food");
+        food = RdfProxy.getObject("Food")
         food.cho = 7.7
         self.assertEqual(food.cho, 7.7)
 
@@ -223,6 +223,10 @@ class RdfProxyTestCase(unittest.TestCase):
         res = sup.superclass_of(sub)
         self.assertTrue(res)
         self.assertFalse(sub.superclass_of(sup))
+
+    def test_getproxy(self):
+        trek = RdfProxy.getProxy("<dom:trekking>")
+        self.assertEqual(trek.uri, "<dom:trekking>")
 
 if __name__ == '__main__':
     unittest.main()
