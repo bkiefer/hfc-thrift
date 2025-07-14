@@ -23,6 +23,8 @@ class RdfProxy:
     OBJECTS_ARE_NAMED_INDIVIDUALS: ClassVar[bool] = True
     UNDEFINED_SLOTS_ARE_ERRORS = False
 
+    UNBOUND = '__UNBOUND__'
+
     # namespace to create new instances in
     namespace: ClassVar[str]
 
@@ -137,7 +139,7 @@ class RdfProxy:
             hfc = connect(host, port)
             cls.namespace = ns
             cls.preload_classes(classmapping)
-            cls.__uri2pyobject['<owl:Nothing>'] = 'UNBOUND'
+            cls.__uri2pyobject['<owl:Nothing>'] = RdfProxy.UNBOUND
 
     @classmethod
     def shutdown_rdfproxy(cls) -> None:
@@ -149,7 +151,7 @@ class RdfProxy:
         global hfc
         try:
             hfc.shutdown()
-        except TTransportException as tex:
+        except TTransportException:
             # ignore, the transport gets closed during shutdown
             pass
 
@@ -266,7 +268,7 @@ class RdfProxy:
     def __getattr__(self, slot):
         # should we have an abstract method checking slot validity?
         if not self.__slot_defined(slot):
-            return False, 'UNBOUND'
+            return RdfProxy.UNBOUND
         rdfprop = self.__propertyBaseToFull[slot]
         if self.isFunctional(rdfprop):
             return self.get_rdf_as_pyobj(rdfprop)

@@ -228,5 +228,10 @@ class RdfProxyTestCase(unittest.TestCase):
         trek = RdfProxy.getProxy("<dom:trekking>")
         self.assertEqual(trek.uri, "<dom:trekking>")
 
+    def test_read_unbound(self):
+        food = RdfProxy.getObject("Food")
+        cho = food.cho
+        self.assertEqual(cho, RdfProxy.UNBOUND)
+
 if __name__ == '__main__':
     unittest.main()
