@@ -343,6 +343,9 @@ def classfactory(classname: str) -> type['RdfProxy']:
     newclass = type(classname, (RdfProxy,), {
 
         # constructor
-        "__init__": lambda self, uri=None: self.newObject(self, uri)
+        "__init__": lambda self, uri=None: self.newObject(self, uri),
+        "__str__": lambda self: self.uri,
+        "__repr__": lambda self: self.uri
+
     })
     return cast(Type[RdfProxy], newclass)
