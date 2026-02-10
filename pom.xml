@@ -7,7 +7,7 @@
 
   <groupId>de.dfki.lt.hfc</groupId>
   <artifactId>hfc-thrift</artifactId>
-  <version>1.2.5</version>
+  <version>1.2.6</version>
   <packaging>jar</packaging>
 
   <inceptionYear>2023</inceptionYear>
@@ -16,7 +16,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <logback.version>1.5.17</logback.version>
+    <logback.version>1.5.26</logback.version>
   </properties>
 
   <dependencies>
